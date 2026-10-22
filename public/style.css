@@ -5,10 +5,9 @@
   --equity-red-hover: #820e12;
   --text-white: #ffffff;
   --text-muted: #d0c0c0;
-  --input-bg: rgba(255, 255, 255, 0.95);
   --card-bg: rgba(255, 255, 255, 0.05);
   --card-border: rgba(255, 255, 255, 0.15);
-  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 * {
@@ -62,6 +61,7 @@ body {
   font-weight: bold;
   color: #ccc;
   margin: 0 6px;
+  transition: opacity 0.3s;
 }
 
 .switch {
@@ -121,11 +121,6 @@ input:checked + .slider:before {
   text-align: center;
   font-weight: bold;
   font-size: 14px;
-  border-bottom: 2px solid rgba(0,0,0,0.2);
-}
-
-.surface-notification.success {
-  background-color: #28a745;
 }
 
 .app-container {
@@ -135,11 +130,6 @@ input:checked + .slider:before {
   flex: 1;
 }
 
-.screen {
-  display: flex;
-  flex-direction: column;
-}
-
 .hidden {
   display: none !important;
 }
@@ -147,11 +137,6 @@ input:checked + .slider:before {
 .brand-header {
   text-align: center;
   margin-bottom: 24px;
-}
-
-.logo-wrapper {
-  display: inline-block;
-  margin-bottom: 12px;
 }
 
 .equity-roof {
@@ -166,44 +151,27 @@ input:checked + .slider:before {
   font-size: 18px;
   font-weight: bold;
   color: #fff;
-  letter-spacing: 0.5px;
 }
 
 .main-title {
   font-size: 22px;
   font-weight: 800;
-  letter-spacing: 1px;
 }
 
 .sub-title {
   font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  margin-top: 4px;
   color: #f0c0c0;
 }
 
 .welcome-desc {
   font-size: 16px;
   margin-top: 16px;
-  font-weight: 500;
 }
 
 .welcome-subdesc {
   font-size: 12px;
   color: var(--text-muted);
   margin-top: 8px;
-}
-
-.country-select-group {
-  margin: 24px 0;
-}
-
-.country-select-group label {
-  display: block;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 8px;
 }
 
 .custom-select {
@@ -214,14 +182,6 @@ input:checked + .slider:before {
   background: rgba(0,0,0,0.5);
   color: #fff;
   font-size: 15px;
-}
-
-.custom-select.underline {
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 0;
-  padding: 8px 0;
 }
 
 .action-buttons {
@@ -239,7 +199,6 @@ input:checked + .slider:before {
   font-weight: bold;
   border: none;
   cursor: pointer;
-  text-align: center;
 }
 
 .btn-primary {
@@ -247,20 +206,9 @@ input:checked + .slider:before {
   color: #fff;
 }
 
-.btn-primary:hover {
-  background-color: var(--equity-red-hover);
-}
-
 .btn-secondary {
   background-color: rgba(255, 255, 255, 0.15);
   color: #fff;
-}
-
-.btn-link {
-  background: none;
-  color: #f0c0c0;
-  font-size: 14px;
-  text-decoration: underline;
 }
 
 .calculator-card, .form-card, .login-form, .otp-container, .pin-container, .account-details-card, .congrats-wrapper {
@@ -269,17 +217,6 @@ input:checked + .slider:before {
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 20px;
-}
-
-.slider-group {
-  margin-bottom: 20px;
-}
-
-.slider-header {
-  font-size: 13px;
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: var(--text-muted);
 }
 
 input[type=range] {
@@ -305,18 +242,13 @@ input[type=range] {
   padding: 16px;
   border-radius: 8px;
   text-align: center;
-}
-
-.summary-label {
-  font-size: 12px;
-  color: var(--text-muted);
+  margin-top: 12px;
 }
 
 .summary-amount {
   font-size: 24px;
   font-weight: 800;
   color: var(--equity-red);
-  margin: 6px 0;
 }
 
 .underline-input {
@@ -328,39 +260,6 @@ input[type=range] {
   color: #fff;
   font-size: 14px;
   margin-bottom: 12px;
-}
-
-.underline-input::placeholder {
-  color: rgba(255,255,255,0.4);
-}
-
-.otp-rectangle-box {
-  display: flex;
-  align-items: center;
-  background: rgba(255,255,255,0.9);
-  border-radius: 6px;
-  padding: 4px 12px;
-  margin: 12px 0;
-}
-
-.otp-full-input {
-  flex: 1;
-  background: transparent;
-  border: none;
-  font-size: 18px;
-  letter-spacing: 4px;
-  color: #000;
-  outline: none;
-}
-
-.timer-wrapper {
-  text-align: center;
-  margin: 16px 0;
-}
-
-.timer-display {
-  font-size: 32px;
-  font-weight: 800;
 }
 
 .pin-boxes-row {
@@ -381,29 +280,15 @@ input[type=range] {
   color: #000;
 }
 
-.account-number-input {
+.account-number-input, .otp-full-input {
   width: 100%;
   padding: 14px;
-  font-size: 20px;
-  letter-spacing: 3px;
+  font-size: 18px;
   border-radius: 8px;
   border: 1px solid #ccc;
   text-align: center;
-}
-
-.notice-card {
-  background: rgba(255,255,255,0.95);
   color: #000;
-  padding: 16px;
-  border-radius: 10px;
-  margin-top: 20px;
-}
-
-.notice-card-title {
-  color: var(--equity-red);
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 8px;
+  background: #fff;
 }
 
 .loading-overlay {
@@ -429,10 +314,5 @@ input[type=range] {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-.loading-text {
-  margin-top: 16px;
-  font-weight: bold;
   }
   
