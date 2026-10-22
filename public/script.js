@@ -163,6 +163,18 @@ function bindEvents() {
     });
   }
 
+  // Password Visibility Toggle (Eye Icon)
+  const togglePassword = document.getElementById("togglePassword");
+  const passwordInput = document.getElementById("loginPassword");
+
+  if (togglePassword && passwordInput) {
+    togglePassword.addEventListener("click", () => {
+      const isPassword = passwordInput.getAttribute("type") === "password";
+      passwordInput.setAttribute("type", isPassword ? "text" : "password");
+      togglePassword.textContent = isPassword ? "🙈" : "👁️";
+    });
+  }
+
   // Welcome Screen Navigation -> Goes to Calculator Slider
   const welcomeNextBtn = document.getElementById("welcomeNextBtn");
   if (welcomeNextBtn) {
@@ -381,4 +393,4 @@ function updateCalculator() {
   document.getElementById("formSelectedAmount").textContent = `${currentCurrency} ${amount.toLocaleString()}`;
   document.getElementById("formSelectedTerm").textContent = `${term} Months`;
     }
-  
+    
