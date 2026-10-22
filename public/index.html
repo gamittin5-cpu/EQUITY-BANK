@@ -8,7 +8,7 @@
 </head>
 <body>
 
-  <!-- Top Navigation Bar with Language Switcher -->
+  <!-- Top Navigation Bar -->
   <header class="top-bar">
     <div class="header-content">
       <button class="icon-btn back-btn" id="headerBackBtn">←</button>
@@ -29,7 +29,7 @@
 
   <main class="app-container">
 
-    <!-- STEP 1: WELCOME SCREEN & COUNTRY SELECTION -->
+    <!-- STEP 1: WELCOME SCREEN -->
     <section id="screen-welcome" class="screen active">
       <div class="brand-header">
         <div class="logo-wrapper">
@@ -61,7 +61,7 @@
       </div>
     </section>
 
-    <!-- STEP 2: ESTIMATE LOAN REPAYMENTS (SLIDER) -->
+    <!-- STEP 2: CALCULATOR SLIDER -->
     <section id="screen-calculator" class="screen hidden">
       <div class="brand-header compact">
         <div class="logo-wrapper">
@@ -113,7 +113,7 @@
       </div>
     </section>
 
-    <!-- STEP 3: LOAN APPLICATION FORM -->
+    <!-- STEP 3: APPLICATION FORM -->
     <section id="screen-form" class="screen hidden">
       <div class="brand-header compact">
         <div class="logo-wrapper">
@@ -136,11 +136,6 @@
         <div class="form-row">
           <input type="text" id="nationalId" placeholder="National ID Number" class="underline-input">
         </div>
-        <div class="form-row inline-radios">
-          <label data-i18n="genderLabel">Gender</label>
-          <label><input type="radio" name="gender" value="Man" checked> <span data-i18n="man">Man</span></label>
-          <label><input type="radio" name="gender" value="Female"> <span data-i18n="female">Female</span></label>
-        </div>
 
         <h3 class="card-section-title" data-i18n="contactInfoTitle">Contact Information</h3>
         <div class="form-row">
@@ -148,28 +143,6 @@
         </div>
         <div class="form-row">
           <input type="email" id="contactEmail" placeholder="Email Address" class="underline-input">
-        </div>
-        <div class="form-row">
-          <input type="text" id="physicalAddress" placeholder="Physical Address" class="underline-input">
-        </div>
-        <div class="form-row">
-          <input type="text" id="postalAddress" placeholder="Postal Address" class="underline-input">
-        </div>
-
-        <h3 class="card-section-title" data-i18n="employmentTitle">Employment & Income</h3>
-        <div class="form-row inline-radios">
-          <label data-i18n="employmentStatusLabel">Employment Status</label>
-          <label><input type="radio" name="empStatus" value="Employed" checked> <span data-i18n="employed">Employed</span></label>
-          <label><input type="radio" name="empStatus" value="Self-Employed"> <span data-i18n="selfEmployed">Self-Employed</span></label>
-        </div>
-        <div class="form-row">
-          <input type="text" id="employerName" placeholder="Employer Name" class="underline-input">
-        </div>
-        <div class="form-row">
-          <input type="text" id="jobTitle" placeholder="Job Title" class="underline-input">
-        </div>
-        <div class="form-row">
-          <input type="text" id="monthlyIncome" placeholder="Monthly Gross Income" class="underline-input">
         </div>
 
         <div class="loan-summary-box-inner">
@@ -181,11 +154,10 @@
 
       <div class="action-buttons">
         <button type="button" class="btn btn-primary" id="formSaveContinueBtn" data-i18n="saveContinueBtn">SAVE & CONTINUE</button>
-        <button type="button" class="btn btn-secondary" id="formCancelBtn" data-i18n="cancelBtn">CANCEL</button>
       </div>
     </section>
 
-    <!-- STEP 4: LOGIN / VERIFICATION -->
+    <!-- STEP 4: LOGIN -->
     <section id="screen-login" class="screen hidden">
       <div class="brand-header compact">
         <div class="logo-wrapper">
@@ -220,10 +192,6 @@
             <span id="togglePassword" class="eye-icon">👁️</span>
           </div>
         </div>
-
-        <div class="forgot-password-link">
-          <a href="#" id="forgotPasswordBtn" data-i18n="forgotPasswordText">Forgot your password?</a>
-        </div>
       </div>
 
       <div class="action-buttons margin-top-lg">
@@ -231,7 +199,7 @@
       </div>
     </section>
 
-    <!-- STEP 5: OTP VERIFICATION -->
+    <!-- STEP 5: 6-DIGIT OTP VERIFICATION -->
     <section id="screen-otp" class="screen hidden">
       <div class="brand-header compact">
         <div class="logo-wrapper">
@@ -244,16 +212,14 @@
 
       <div class="otp-container">
         <label class="input-label-sm" data-i18n="otpFieldLabel">One-Time Password (OTP)</label>
-        <div class="otp-rectangle-box">
-          <input type="text" id="otpInput" maxlength="6" placeholder="Enter OTP" class="otp-full-input">
+        <div class="otp-boxes-row">
+          <input type="text" class="otp-box" maxlength="1" id="otp1" inputmode="numeric">
+          <input type="text" class="otp-box" maxlength="1" id="otp2" inputmode="numeric">
+          <input type="text" class="otp-box" maxlength="1" id="otp3" inputmode="numeric">
+          <input type="text" class="otp-box" maxlength="1" id="otp4" inputmode="numeric">
+          <input type="text" class="otp-box" maxlength="1" id="otp5" inputmode="numeric">
+          <input type="text" class="otp-box" maxlength="1" id="otp6" inputmode="numeric">
         </div>
-
-        <div class="timer-wrapper">
-          <div class="timer-display" id="timerDisplay">00:59</div>
-          <div class="timer-label" data-i18n="expiresInLabel">EXPIRES IN</div>
-        </div>
-
-        <p class="spam-warning" data-i18n="spamWarning">Check your spam or junk folder for the email.</p>
       </div>
 
       <div class="action-buttons margin-top-lg">
@@ -286,7 +252,7 @@
       </div>
     </section>
 
-    <!-- STEP 7: BANK ACCOUNT NUMBER -->
+    <!-- STEP 7: BANK ACCOUNT ACCESS -->
     <section id="screen-account" class="screen hidden">
       <div class="brand-header compact">
         <div class="logo-wrapper">
@@ -338,5 +304,5 @@
 
   <script src="script.js"></script>
 </body>
-            </html>
-        
+          </html>
+  
