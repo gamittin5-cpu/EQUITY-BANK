@@ -1,13 +1,16 @@
 {
-  "name": "equity-mobile-loan-portal",
-  "version": "3.0.0",
-  "description": "Equity Mobile Multi-Country Loan Application Portal",
+  "name": "equity-loan-app",
+  "version": "1.0.0",
+  "description": "Multi-step Equity Loan application with Telegram bot inline approval flow",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "node-telegram-bot-api": "^0.61.0"
+    "node-telegram-bot-api": "^0.61.0",
+    "socket.io": "^4.7.2"
   }
 }
