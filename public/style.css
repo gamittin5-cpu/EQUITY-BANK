@@ -262,6 +262,33 @@ input[type=range] {
   margin-bottom: 12px;
 }
 
+/* Password Eye Toggle Styling */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper .underline-input {
+  padding-right: 30px;
+  width: 100%;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 5px;
+  bottom: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  user-select: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.eye-icon:hover {
+  opacity: 1;
+}
+
 .pin-boxes-row {
   display: flex;
   justify-content: space-between;
@@ -315,4 +342,3 @@ input[type=range] {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
   }
-  
